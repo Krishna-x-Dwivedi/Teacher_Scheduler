@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Schedule & Admin - Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Configure Tailwind CSS with a refined theme
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'], // System fonts as fallback
+                    },
+                    colors: {
+                        primary: { // Refined primary palette (Indigo)
+                            light: '#e0e7ff', // indigo-100
+                            DEFAULT: '#4f46e5', // indigo-600
+                            dark: '#3730a3', // indigo-800
+                            darker: '#312e81', // indigo-900
+                        },
+                        secondary: { // Refined secondary palette (Emerald)
+                            light: '#d1fae5', // emerald-100
+                            DEFAULT: '#10b981', // emerald-500
+                            dark: '#047857', // emerald-700
+                        },
+                        accent: { // Accent color (e.g., for notifications)
+                            red: '#fecaca', // red-200
+                            redDark: '#dc2626', // red-600
+                            yellow: '#fef3c7', // amber-100
+                            yellowDark: '#d97706', // amber-600
+                            blue: '#dbeafe', // blue-100
+                            blueDark: '#2563eb', // blue-600
+                        },
+                        gray: { // Enhanced gray palette
+                            light: '#f9fafb', // gray-50
+                            DEFAULT: '#6b7280', // gray-500
+                            dark: '#374151', // gray-700
+                            darker: '#111827', // gray-900
+                        },
+                    },
+                    boxShadow: {
+                        'subtle': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+                        'medium': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                        'lg': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)', // Added larger shadow
+                    },
+                     transitionProperty: {
+                        'height': 'height',
+                        'spacing': 'margin, padding',
+                        'transform': 'transform',
+                        'opacity': 'opacity',
+                    },
+                    // Added keyframes for subtle animations
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                         slideInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    },
+                    animation: {
+                        fadeIn: 'fadeIn 0.5s ease-out forwards',
+                        slideInUp: 'slideInUp 0.5s ease-out forwards',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Base body styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* gray-100 */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        /* Smooth transitions */
+        button, select, input, a, [role="button"], .app-section, aside {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Smoother cubic-bezier */
+        }
+        /* Hide sections by default, prepare for animation */
+        .app-section {
+            display: none; /* Initially hidden */
+            opacity: 0;
+            /* Animation applied via JS */
+        }
+        .app-section.active-section {
+             opacity: 1;
+             /* Apply animation when active */
+             animation: fadeIn 0.6s ease-out forwards; /* Use fadeIn animation */
+        }
+
+        /* Active navigation link style */
+        .nav-link.active {
+            background-color: theme('colors.primary.darker'); /* Darker indigo */
+            color: white;
+            font-weight: 600;
+            box-shadow: inset 3px 0 0 theme('colors.secondary.DEFAULT'); /* Active indicator */
+        }
+         .nav-link:not(.active):hover {
+             background-color: theme('colors.primary.dark'); /* Slightly lighter dark on hover */
+             color: theme('colors.indigo.100');
+         }
+
+        /* Custom scrollbar styling */
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: theme('colors.gray.200'); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: theme('colors.gray.400'); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: theme('colors.gray.500'); }
+
+        /* Styling for form inputs & selects */
+        input[type="email"], input[type="password"], input[type="text"], input[type="datetime-local"], select {
+            appearance: none; /* Remove default styling */
+            background-color: #fff;
+            border: 1px solid theme('colors.gray.300');
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 0.875rem 1rem; /* Increased padding slightly */
+            width: 100%;
+            font-size: 0.875rem; /* text-sm */
+            line-height: 1.25rem;
+            color: theme('colors.gray.darker');
+            box-shadow: theme('boxShadow.sm');
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        select { /* Add dropdown arrow for selects */
+             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+             background-position: right 0.5rem center;
+             background-repeat: no-repeat;
+             background-size: 1.5em 1.5em;
+             padding-right: 2.5rem; /* Make space for arrow */
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: theme('colors.primary.DEFAULT');
+            box-shadow: 0 0 0 3px theme('colors.primary.light'); /* Focus ring */
+        }
+        label {
+            font-weight: 500; /* medium */
+            color: theme('colors.gray.dark');
+            margin-bottom: 0.25rem; /* Added slight margin below label */
+            display: block; /* Ensure label takes full width */
+        }
+        input[type="checkbox"] { /* Basic checkbox style */
+             appearance: auto;
+             width: auto;
+             height: 1rem;
+             width: 1rem;
+             margin-right: 0.5rem;
+             box-shadow: none;
+             border-radius: 0.25rem;
+        }
+        input[type="checkbox"]:focus {
+             box-shadow: 0 0 0 3px theme('colors.primary.light');
+             border-color: theme('colors.primary.DEFAULT');
+        }
+
+
+        /* Card hover effect */
+        .hover-card {
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+        }
+        .hover-card:hover {
+            transform: translateY(-4px);
+            box-shadow: theme('boxShadow.lg'); /* Use larger shadow on hover */
+        }
+
+        /* Centering for Login/Signup Sections */
+        main {
+            display: flex;
+            flex-direction: column; /* Stack sections vertically */
+        }
+        /* Ensure login/signup sections take full available height and center their content */
+        #loginSection, #signUpSection {
+            flex-grow: 1; /* Allow section to grow */
+            display: flex;
+            flex-direction: column; /* Stack image and form */
+            align-items: center; /* Center horizontally */
+            justify-content: center; /* Center vertically */
+            padding: 2rem 1rem; /* Add padding */
+            width: 100%; /* Take full width */
+        }
+        /* Style for the form container within login/signup */
+        .auth-form-container {
+            background-color: white;
+            padding: 2.5rem; /* Increased padding */
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: theme('boxShadow.medium');
+            width: 100%;
+            max-width: 28rem; /* max-w-md */
+            animation: slideInUp 0.6s ease-out forwards; /* Add slide-in animation */
+        }
+        .error-message {
+            color: theme('colors.accent.redDark');
+            font-size: 0.875rem; /* text-sm */
+            margin-top: 1rem;
+            text-align: center;
+            min-height: 1.25rem; /* Reserve space */
+        }
+        /* General Form Error Styling */
+        .form-error {
+             color: theme('colors.accent.redDark');
+             font-size: 0.875rem; /* text-sm */
+             margin-top: 0.5rem;
+             min-height: 1.25rem; /* Reserve space */
+        }
+        /* General Form Success Styling */
+        .form-success {
+             color: theme('colors.secondary.dark');
+             font-size: 0.875rem; /* text-sm */
+             margin-top: 0.5rem;
+             min-height: 1.25rem; /* Reserve space */
+        }
+        /* Table Styling */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid theme('colors.gray.200');
+            padding: 0.75rem 1rem;
+            text-align: left;
+        }
+        .data-table th {
+            background-color: theme('colors.gray.100');
+            font-weight: 600;
+            color: theme('colors.gray.darker');
+        }
+        .data-table tr:nth-child(even) {
+            background-color: theme('colors.gray.light');
+        }
+        .data-table tr:hover {
+            background-color: theme('colors.primary.light');
+        }
+        /* Button in table */
+        .table-button {
+             padding: 0.25rem 0.5rem;
+             font-size: 0.75rem; /* text-xs */
+             border-radius: 0.375rem; /* rounded-md */
+             transition: background-color 0.2s ease;
+        }
+        .delete-button {
+             background-color: theme('colors.accent.red');
+             color: theme('colors.accent.redDark');
+             border: 1px solid theme('colors.accent.redDark');
+        }
+        .delete-button:hover {
+             background-color: theme('colors.accent.redDark');
+             color: white;
+        }
+
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden bg-gray-100">
+
+    <aside id="sidebar" class="w-64 bg-primary-dark text-indigo-100 flex flex-col p-4 space-y-6 fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-30 shadow-lg print:hidden custom-scrollbar overflow-y-auto">
+        <div class="flex items-center justify-between pt-2 pb-4 border-b border-indigo-700">
+             <h2 class="text-2xl font-bold flex items-center text-white">
+                 <svg class="w-8 h-8 mr-2 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                 Scheduler
+             </h2>
+             <button id="closeSidebarBtn" class="md:hidden text-indigo-300 hover:text-white focus:outline-none">
+                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+             </button>
+        </div>
+        <nav class="flex-1 space-y-1.5">
+            <a href="#" data-section="home" class="nav-link flex items-center px-3 py-2.5 rounded-md text-sm font-medium active">
+                <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                Home
+            </a>
+            <a href="#" data-section="reminders" class="nav-link flex items-center px-3 py-2.5 rounded-md text-sm font-medium">
+                <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Reminders
+            </a>
+            <a href="#" data-section="notifications" class="nav-link flex items-center px-3 py-2.5 rounded-md text-sm font-medium relative">
+                <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                Notifications
+                <span class="absolute top-1.5 right-2.5 bg-accent-redDark text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center border-2 border-primary-dark">3</span> </a>
+
+             <div class="pt-4 mt-4 border-t border-indigo-700">
+                 <span class="px-3 text-xs font-semibold uppercase text-indigo-300 tracking-wider">Admin</span>
+             </div>
+
+             <a href="#" data-section="manageFaculties" class="nav-link flex items-center px-3 py-2.5 rounded-md text-sm font-medium">
+                 <svg class="w-5 h-5 mr-3 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" /></svg>
+                 Faculties
+             </a>
+             <a href="#" data-section="manageSubjects" class="nav-link flex items-center px-3 py-2.5 rounded-md text-sm font-medium">
+                 <svg class="w-5 h-5 mr-3 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" /></svg>
+                 Subjects
+             </a>
+             <a href="#" data-section="manageMappings" class="nav-link flex items-center px-3 py-2.5 rounded-md text-sm font-medium">
+                <svg class="w-5 h-5 mr-3 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" /></svg>
+                 Faculty Subjects
+             </a>
+             </nav>
+        <div class="mt-auto pb-2">
+             <a href="#" id="logoutButton" class="nav-link flex items-center px-3 py-2.5 rounded-md text-sm font-medium">
+                <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Logout
+            </a>
+        </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <header class="bg-white shadow-sm p-4 flex justify-between items-center md:hidden print:hidden">
+            <button id="openSidebarBtn" class="text-gray-600 hover:text-primary-DEFAULT focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+            <span class="text-xl font-semibold text-gray-700">Scheduler</span>
+            <div>{/* Placeholder */}</div>
+        </header>
+
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+
+            <section id="loginSection" class="app-section">
+                <div class="auth-form-container">
+                    <div class="text-center mb-8">
+                         <svg class="w-12 h-12 mx-auto text-primary-DEFAULT" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                         <h2 class="mt-2 text-3xl font-extrabold text-center text-gray-darker">Welcome Back!</h2>
+                         <p class="mt-1 text-center text-gray-DEFAULT">Sign in to continue</p>
+                    </div>
+                    <form id="loginForm" class="space-y-6">
+                        <div>
+                            <label for="loginEmail">Email Address</label>
+                            <input type="email" id="loginEmail" name="email" required placeholder="you@example.com">
+                        </div>
+                        <div>
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" name="password" required placeholder="••••••••">
+                        </div>
+                        <div class="flex items-center justify-end">
+                            <a href="#" class="text-sm font-medium text-primary-DEFAULT hover:text-primary-dark hover:underline">Forgot password?</a>
+                        </div>
+                        <div id="loginError" class="error-message"></div> <button type="submit" id="loginSubmitButton" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-primary-DEFAULT hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-DEFAULT">
+                            Sign In
+                        </button>
+                        <p class="mt-6 text-center text-sm text-gray-DEFAULT">
+                            Don't have an account? <a href="#" id="showSignUp" class="font-medium text-primary-DEFAULT hover:text-primary-dark hover:underline">Sign Up</a>
+                        </p>
+                    </form>
+                </div>
+            </section>
+
+            <section id="signUpSection" class="app-section">
+                 <div class="auth-form-container">
+                     <div class="text-center mb-8">
+                         <svg class="w-12 h-12 mx-auto text-primary-DEFAULT" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                         <h2 class="mt-2 text-3xl font-extrabold text-center text-gray-darker">Create Account</h2>
+                         <p class="mt-1 text-center text-gray-DEFAULT">Get started with the scheduler</p>
+                    </div>
+                    <form id="signUpForm" class="space-y-5">
+                        <div>
+                            <label for="signUpName">Full Name</label>
+                            <input type="text" id="signUpName" name="name" required placeholder="Your Name">
+                        </div>
+                        <div>
+                            <label for="signUpEmail">Email Address</label>
+                            <input type="email" id="signUpEmail" name="email" required placeholder="you@example.com">
+                        </div>
+                        <div>
+                            <label for="signUpPassword">Password</label>
+                            <input type="password" id="signUpPassword" name="password" required placeholder="Create a password">
+                        </div>
+                        <div>
+                            <label for="signUpConfirmPassword">Confirm Password</label>
+                            <input type="password" id="signUpConfirmPassword" name="confirmPassword" required placeholder="Confirm your password">
+                        </div>
+                        <div id="signUpError" class="error-message"></div> <button type="submit" id="signUpSubmitButton" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-primary-DEFAULT hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-DEFAULT">
+                            Sign Up
+                        </button>
+                         <p class="mt-6 text-center text-sm text-gray-DEFAULT">
+                            Already have an account? <a href="#" id="showLogin" class="font-medium text-primary-DEFAULT hover:text-primary-dark hover:underline">Sign In</a>
+                        </p>
+                    </form>
+                </div>
+            </section>
+
+            <div id="loggedInContent" class="hidden">
+                <section id="homeSection" class="app-section space-y-8 p-4 sm:p-6 lg:p-8">
+                    <h1 class="text-3xl font-bold text-gray-darker">Dashboard</h1>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        {/* Availability Card - Temporarily Disabled */}
+                        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card opacity-50">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Find Available Teachers</h2>
+                             <div class="text-center text-gray-500 p-4">
+                                This feature is temporarily disabled and will be replaced by the timetable view.
+                             </div>
+                            {/*
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                                <div>
+                                    <label for="daySelect">Day:</label>
+                                    <select id="daySelect" name="day" disabled>...</select>
+                                </div>
+                                <div>
+                                    <label for="timeSelect">Time Slot:</label>
+                                    <select id="timeSelect" name="time" disabled>...</select>
+                                </div>
+                            </div>
+                            <button id="findButton" class="w-full bg-primary-DEFAULT hover:bg-primary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-DEFAULT focus:ring-offset-2 mb-5" disabled>
+                                Find Availability
+                            </button>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-dark mb-2">Results:</h3>
+                                <div id="results" class="bg-gray-light p-4 rounded-md border border-gray-200 min-h-[120px] text-gray-DEFAULT text-sm">
+                                    Feature under reconstruction.
+                                </div>
+                            </div>
+                             */}
+                        </div>
+                        {/* Stats Card */}
+                        <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Quick Stats</h2>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center p-4 bg-primary-light rounded-lg">
+                                    <span class="text-gray-dark font-medium text-sm">Total Faculties</span>
+                                    <span id="facultyCount" class="font-bold text-primary-dark text-lg">?</span>
+                                </div>
+                                <div class="flex justify-between items-center p-4 bg-secondary-light rounded-lg">
+                                    <span class="text-gray-dark font-medium text-sm">Total Subjects</span>
+                                    <span id="subjectCount" class="font-bold text-secondary-dark text-lg">?</span>
+                                </div>
+                                <div class="flex justify-between items-center p-4 bg-accent-yellow rounded-lg">
+                                    <span class="text-gray-dark font-medium text-sm">Upcoming Reminders</span>
+                                    <span id="upcomingRemindersCount" class="font-bold text-accent-yellowDark text-lg">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="remindersSection" class="app-section p-4 sm:p-6 lg:p-8">
+                    <h1 class="text-3xl font-bold text-gray-darker mb-6">Reminders</h1>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        {/* Add Reminder Card */}
+                        <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Add New Reminder</h2>
+                            <form id="addReminderForm" class="space-y-4">
+                                <div>
+                                    <label for="reminderText">Reminder Text</label>
+                                    <input type="text" id="reminderText" name="reminderText" required placeholder="e.g., Staff Meeting">
+                                </div>
+                                <div>
+                                    <label for="reminderDate">Date & Time</label>
+                                    <input type="datetime-local" id="reminderDate" name="reminderDate" required>
+                                </div>
+                                <div id="addReminderError" class="form-error"></div>
+                                <div id="addReminderSuccess" class="form-success"></div>
+                                <button type="submit" id="addReminderButton" class="w-full bg-secondary-DEFAULT hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-DEFAULT focus:ring-offset-2">
+                                    <span class="flex items-center justify-center">
+                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                                         Add Reminder
+                                    </span>
+                                </button>
+                            </form>
+                        </div>
+                         {/* Reminder List Card */}
+                        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Upcoming Reminders</h2>
+                            <div id="reminderList" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar pr-2">
+                                <p id="noRemindersText" class="text-center text-gray-DEFAULT pt-4">Loading reminders...</p>
+                                {/* Reminder items added by JS */}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="notificationsSection" class="app-section p-4 sm:p-6 lg:p-8">
+                    <h1 class="text-3xl font-bold text-gray-darker mb-6">Notifications</h1>
+                    <div class="bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                         {/* Notifications Header */}
+                        <div class="flex justify-between items-center mb-5 border-b border-gray-200 pb-3">
+                            <h2 class="text-xl font-semibold text-gray-darker">Recent Activity</h2>
+                            <button class="text-sm font-medium text-primary-DEFAULT hover:underline focus:outline-none">Mark all as read</button>
+                        </div>
+                         {/* Notifications List */}
+                        <div id="notificationList" class="space-y-4 max-h-[65vh] overflow-y-auto custom-scrollbar pr-2">
+                            {/* Placeholder/Example Notification Items - Replace with dynamic loading if needed */}
+                            <div class="notification-item flex items-start p-4 bg-accent-blue border-l-4 border-accent-blueDark rounded-r-md shadow-sm">
+                                <svg class="w-6 h-6 text-accent-blueDark mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <div>
+                                    <p class="font-medium text-gray-darker">System Update: MySQL integration complete.</p>
+                                    <p class="text-sm text-gray-DEFAULT">Now</p>
+                                </div>
+                            </div>
+                             <p id="noNotificationsText" class="text-center text-gray-DEFAULT pt-4 hidden">You're all caught up!</p>
+                        </div>
+                    </div>
+                </section>
+
+                 <section id="manageFacultiesSection" class="app-section p-4 sm:p-6 lg:p-8">
+                    <h1 class="text-3xl font-bold text-gray-darker mb-6">Manage Faculties</h1>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Add New Faculty</h2>
+                            <form id="addFacultyForm" class="space-y-4">
+                                <div>
+                                    <label for="facultyName">Faculty Name</label>
+                                    <input type="text" id="facultyName" name="facultyName" required placeholder="e.g., Prof. Anil Kumar">
+                                </div>
+                                <div>
+                                    <label for="facultyCode">Faculty Code (Optional)</label>
+                                    <input type="text" id="facultyCode" name="facultyCode" placeholder="e.g., AK001">
+                                </div>
+                                <div id="addFacultyError" class="form-error"></div>
+                                <div id="addFacultySuccess" class="form-success"></div>
+                                <button type="submit" id="addFacultyButton" class="w-full bg-secondary-DEFAULT hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-DEFAULT focus:ring-offset-2">
+                                    Add Faculty
+                                </button>
+                            </form>
+                        </div>
+                        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Existing Faculties</h2>
+                            <div class="max-h-96 overflow-y-auto custom-scrollbar pr-2">
+                                <table id="facultyTable" class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Code</th>
+                                            </tr>
+                                    </thead>
+                                    <tbody id="facultyTableBody">
+                                        <tr><td colspan="3" class="text-center text-gray-500 py-4">Loading faculties...</td></tr>
+                                        </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                 </section>
+
+                 <section id="manageSubjectsSection" class="app-section p-4 sm:p-6 lg:p-8">
+                    <h1 class="text-3xl font-bold text-gray-darker mb-6">Manage Subjects</h1>
+                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Add New Subject</h2>
+                            <form id="addSubjectForm" class="space-y-4">
+                                <div>
+                                    <label for="subjectCode">Subject Code</label>
+                                    <input type="text" id="subjectCode" name="subjectCode" required placeholder="e.g., CS-301">
+                                </div>
+                                <div>
+                                    <label for="subjectName">Subject Name</label>
+                                    <input type="text" id="subjectName" name="subjectName" required placeholder="e.g., Data Structures">
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="subjectIsLab" name="subjectIsLab" class="form-checkbox h-5 w-5 text-primary-DEFAULT">
+                                    <label for="subjectIsLab" class="ml-2 text-sm text-gray-700 !mb-0">Is this a Lab subject?</label>
+                                </div>
+                                <div id="addSubjectError" class="form-error"></div>
+                                <div id="addSubjectSuccess" class="form-success"></div>
+                                <button type="submit" id="addSubjectButton" class="w-full bg-primary-dark hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-DEFAULT focus:ring-offset-2">
+                                    Add Subject
+                                </button>
+                            </form>
+                        </div>
+                        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Existing Subjects</h2>
+                             <div class="max-h-96 overflow-y-auto custom-scrollbar pr-2">
+                                <table id="subjectTable" class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Code</th>
+                                            <th>Name</th>
+                                            <th>Is Lab?</th>
+                                            </tr>
+                                    </thead>
+                                    <tbody id="subjectTableBody">
+                                         <tr><td colspan="4" class="text-center text-gray-500 py-4">Loading subjects...</td></tr>
+                                        </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                 </section>
+
+                 <section id="manageMappingsSection" class="app-section p-4 sm:p-6 lg:p-8">
+                    <h1 class="text-3xl font-bold text-gray-darker mb-6">Manage Faculty-Subject Assignments</h1>
+                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Assign Subject to Faculty</h2>
+                            <form id="addMappingForm" class="space-y-4">
+                                <div>
+                                    <label for="mapFacultySelect">Select Faculty</label>
+                                    <select id="mapFacultySelect" name="mapFacultySelect" required>
+                                        <option value="">Loading faculties...</option>
+                                        </select>
+                                </div>
+                                <div>
+                                    <label for="mapSubjectSelect">Select Subject to Assign</label>
+                                    <select id="mapSubjectSelect" name="mapSubjectSelect" required>
+                                         <option value="">Loading subjects...</option>
+                                         </select>
+                                </div>
+                                <div id="addMappingError" class="form-error"></div>
+                                <div id="addMappingSuccess" class="form-success"></div>
+                                <button type="submit" id="addMappingButton" class="w-full bg-secondary-DEFAULT hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-DEFAULT focus:ring-offset-2">
+                                    Assign Subject
+                                </button>
+                            </form>
+                        </div>
+                        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-3">Current Assignments</h2>
+                             <div class="mb-4">
+                                 <label for="viewFacultySelect" class="text-sm font-medium text-gray-700">View assignments for:</label>
+                                 <select id="viewFacultySelect" name="viewFacultySelect" class="mt-1">
+                                     <option value="">Select a faculty...</option>
+                                     </select>
+                             </div>
+                             <div id="facultyAssignmentsDisplay" class="border-t border-gray-200 pt-4">
+                                 <p id="assignmentsPlaceholder" class="text-gray-500">Select a faculty to see their assigned subjects.</p>
+                                 <ul id="assignedSubjectsList" class="space-y-2 list-disc list-inside hidden">
+                                     </ul>
+                             </div>
+                        </div>
+                    </div>
+                 </section>
+
+
+            </div> </main>
+    </div>
+
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-60 z-20 hidden md:hidden print:hidden" aria-hidden="true"></div>
+
+
+    <script>
+        // --- Global Variables ---
+        const backendUrl = 'http://localhost:5000'; // !!! IMPORTANT: Using port 5000 now !!!
+        const sections = document.querySelectorAll('.app-section');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const loginSection = document.getElementById('loginSection');
+        const signUpSection = document.getElementById('signUpSection');
+        const loggedInSection = document.getElementById('loggedInContent');
+        const homeSection = document.getElementById('homeSection');
+        const reminderList = document.getElementById('reminderList');
+        const notificationList = document.getElementById('notificationList');
+        const noRemindersText = document.getElementById('noRemindersText');
+        const noNotificationsText = document.getElementById('noNotificationsText');
+        const upcomingRemindersCountEl = document.getElementById('upcomingRemindersCount');
+        const facultyCountEl = document.getElementById('facultyCount');
+        const subjectCountEl = document.getElementById('subjectCount');
+
+        // Form Error/Success Displays
+        const loginErrorEl = document.getElementById('loginError');
+        const signUpErrorEl = document.getElementById('signUpError');
+        const addReminderErrorEl = document.getElementById('addReminderError');
+        const addReminderSuccessEl = document.getElementById('addReminderSuccess');
+        const addFacultyErrorEl = document.getElementById('addFacultyError');
+        const addFacultySuccessEl = document.getElementById('addFacultySuccess');
+        const addSubjectErrorEl = document.getElementById('addSubjectError');
+        const addSubjectSuccessEl = document.getElementById('addSubjectSuccess');
+        const addMappingErrorEl = document.getElementById('addMappingError');
+        const addMappingSuccessEl = document.getElementById('addMappingSuccess');
+
+
+        // Form Buttons
+        const loginSubmitButton = document.getElementById('loginSubmitButton');
+        const signUpSubmitButton = document.getElementById('signUpSubmitButton');
+        const addReminderButton = document.getElementById('addReminderButton');
+        const addFacultyButton = document.getElementById('addFacultyButton');
+        const addSubjectButton = document.getElementById('addSubjectButton');
+        const addMappingButton = document.getElementById('addMappingButton');
+
+
+        // Sidebar elements
+        const sidebar = document.getElementById('sidebar');
+        const openSidebarBtn = document.getElementById('openSidebarBtn');
+        const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        // Admin Section Elements
+        const facultyTableBody = document.getElementById('facultyTableBody');
+        const subjectTableBody = document.getElementById('subjectTableBody');
+        const mapFacultySelect = document.getElementById('mapFacultySelect');
+        const mapSubjectSelect = document.getElementById('mapSubjectSelect');
+        const viewFacultySelect = document.getElementById('viewFacultySelect');
+        const assignedSubjectsList = document.getElementById('assignedSubjectsList');
+        const assignmentsPlaceholder = document.getElementById('assignmentsPlaceholder');
+
+
+        // --- Helper Functions ---
+
+        function disableButton(button, text = "Processing...") {
+            if (button) {
+                button.disabled = true;
+                button.classList.add('opacity-50', 'cursor-not-allowed');
+                // Store original text if not already stored
+                if (!button.dataset.originalText) {
+                    button.dataset.originalText = button.innerHTML;
+                }
+                button.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg> ${text}`;
+            }
+        }
+
+        function enableButton(button) {
+            if (button) {
+                button.disabled = false;
+                button.classList.remove('opacity-50', 'cursor-not-allowed');
+                // Restore original text if stored
+                if (button.dataset.originalText) {
+                    button.innerHTML = button.dataset.originalText;
+                    // Clear stored text after restoring
+                    delete button.dataset.originalText;
+                }
+            }
+        }
+
+        // Function to display success/error messages and clear them after a delay
+        function showFeedback(element, message, isError = true) {
+            if (!element) return;
+            element.textContent = message;
+            element.classList.remove('hidden');
+            element.classList.toggle('form-error', isError);
+            element.classList.toggle('form-success', !isError);
+
+            // Clear the message after 4 seconds
+            setTimeout(() => {
+                element.textContent = '';
+                element.classList.add('hidden');
+            }, 4000);
+        }
+
+        // --- Core Functions ---
+
+        function hideAllSections() {
+            sections.forEach(section => {
+                section.style.display = 'none';
+                section.classList.remove('active-section');
+            });
+        }
+
+        function showSection(sectionId) {
+            hideAllSections();
+            const sectionToShow = document.getElementById(sectionId);
+            if (sectionToShow) {
+                const displayStyle = (sectionId === 'loginSection' || sectionId === 'signUpSection') ? 'flex' : 'block';
+                sectionToShow.style.display = displayStyle;
+                requestAnimationFrame(() => {
+                     sectionToShow.classList.add('active-section');
+                });
+                 // Fetch data when admin sections are shown
+                 if (sectionId === 'manageFacultiesSection') {
+                     fetchFaculties();
+                 } else if (sectionId === 'manageSubjectsSection') {
+                     fetchSubjects();
+                 } else if (sectionId === 'manageMappingsSection') {
+                     // Fetch both for the dropdowns
+                     fetchFaculties(true); // Pass true to populate mapping dropdowns
+                     fetchSubjects(true);
+                 } else if (sectionId === 'remindersSection') {
+                     fetchReminders();
+                 } else if (sectionId === 'homeSection') {
+                     // Update dashboard counts if needed
+                     updateDashboardCounts();
+                 }
+
+            } else {
+                console.error(`Section with ID "${sectionId}" not found.`);
+            }
+        }
+
+        function updateNavLinks(activeSectionId) {
+            navLinks.forEach(link => {
+                link.classList.toggle('active', link.dataset.section === activeSectionId);
+            });
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            loginErrorEl.textContent = ''; // Clear previous errors
+            disableButton(loginSubmitButton, "Signing In...");
+
+            try {
+                const response = await fetch(`${backendUrl}/api/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    console.log('Login successful:', data.message);
+                    // TODO: Implement proper session/token storage here
+                    // Store user info if needed: localStorage.setItem('user', JSON.stringify(data.user));
+
+                    loginSection.style.display = 'none';
+                    loginSection.classList.remove('active-section');
+                    signUpSection.style.display = 'none';
+                    signUpSection.classList.remove('active-section');
+
+                    loggedInSection.classList.remove('hidden');
+                    showSection('homeSection'); // Show home section first
+                    updateNavLinks('home');
+                    // Fetch initial data needed after login
+                    fetchReminders();
+                    updateDashboardCounts(); // Fetch counts for dashboard
+
+
+                    if (window.innerWidth >= 768) {
+                        sidebar.classList.remove('-translate-x-full');
+                        sidebar.classList.add('md:relative', 'md:translate-x-0');
+                    }
+                } else {
+                    console.error('Login failed:', data.error);
+                    showFeedback(loginErrorEl, data.error || 'Login failed. Please check your credentials.');
+                }
+            } catch (error) {
+                console.error('Network or other error during login:', error);
+                showFeedback(loginErrorEl, 'An error occurred. Please try again later.');
+            } finally {
+                 enableButton(loginSubmitButton);
+            }
+        }
+
+        async function handleSignUp(event) {
+            event.preventDefault();
+            const name = document.getElementById('signUpName').value;
+            const email = document.getElementById('signUpEmail').value;
+            const password = document.getElementById('signUpPassword').value;
+            const confirmPassword = document.getElementById('signUpConfirmPassword').value;
+
+            signUpErrorEl.textContent = ''; // Clear previous errors
+
+            if (password !== confirmPassword) {
+                showFeedback(signUpErrorEl, 'Passwords do not match.');
+                return;
+            }
+
+            disableButton(signUpSubmitButton, "Signing Up...");
+
+            try {
+                const response = await fetch(`${backendUrl}/api/signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) { // Status 201 Created
+                    console.log('Sign up successful:', data.message);
+                    alert('Sign up successful! Please log in.'); // Simple feedback
+                    showSection('loginSection'); // Switch to login view
+                    loggedInSection.classList.add('hidden'); // Keep logged-in content hidden
+                    document.getElementById('signUpForm').reset(); // Clear signup form
+                } else {
+                    console.error('Sign up failed:', data.error);
+                    showFeedback(signUpErrorEl, data.error || 'Sign up failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Network or other error during sign up:', error);
+                showFeedback(signUpErrorEl, 'An error occurred. Please try again later.');
+            } finally {
+                 enableButton(signUpSubmitButton);
+            }
+        }
+
+        function handleLogout() {
+            console.log('Logout');
+             // TODO: Implement real logout (e.g., clear token, call backend endpoint if necessary)
+             // localStorage.removeItem('user'); // Example if storing user info
+
+            loggedInSection.classList.add('hidden');
+            hideAllSections();
+            showSection('loginSection');
+            updateNavLinks(null); // Deactivate all nav links
+            document.getElementById('loginForm').reset(); // Clear login form
+            closeMobileSidebar();
+        }
+
+        function handleNavClick(event) {
+            event.preventDefault();
+            const targetSection = event.currentTarget.dataset.section;
+            if (targetSection && document.getElementById(targetSection + 'Section')) {
+                showSection(targetSection + 'Section');
+                updateNavLinks(targetSection);
+                if (window.innerWidth < 768) {
+                   closeMobileSidebar();
+                }
+            } else if (targetSection) {
+                console.error(`Target section "${targetSection}Section" not found.`);
+            }
+        }
+
+        // --- REMINDERS ---
+        function renderReminder(reminder) {
+            const reminderDiv = document.createElement('div');
+            reminderDiv.dataset.id = reminder.id;
+            reminderDiv.className = 'reminder-item p-4 bg-gray-light border border-gray-200 rounded-lg flex justify-between items-center hover:bg-gray-200 transition-colors duration-150 opacity-0 translate-y-2';
+
+            let formattedDate = 'Invalid Date';
+            try {
+                const dateObj = new Date(reminder.reminder_datetime); // Assumes ISO string from backend
+                 if (!isNaN(dateObj)) {
+                    formattedDate = dateObj.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+                 }
+            } catch (e) { console.error("Error parsing date:", reminder.reminder_datetime, e); }
+
+
+            reminderDiv.innerHTML = `
+                <div>
+                    <p class="font-medium text-gray-darker break-words">${reminder.text}</p>
+                    <p class="text-sm text-gray-DEFAULT">${formattedDate}</p>
+                </div>
+                <button class="delete-reminder-btn text-red-500 hover:text-accent-redDark p-1 rounded-full hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-1 flex-shrink-0 ml-2" aria-label="Delete reminder">
+                    <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                </button>
+            `;
+            // Trigger animation
+            requestAnimationFrame(() => {
+                reminderDiv.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                reminderDiv.classList.remove('opacity-0', 'translate-y-2');
+            });
+            return reminderDiv;
+        }
+
+        function checkReminderListEmpty(count = null) {
+            const reminderItemsCount = count !== null ? count : reminderList.querySelectorAll('.reminder-item').length;
+            if (noRemindersText) {
+                 noRemindersText.classList.toggle('hidden', reminderItemsCount > 0);
+                 if(reminderItemsCount === 0) {
+                    noRemindersText.textContent = "No reminders scheduled yet.";
+                 }
+            }
+            if (upcomingRemindersCountEl) {
+                upcomingRemindersCountEl.textContent = reminderItemsCount;
+            }
+        }
+
+        async function fetchReminders() {
+            console.log('Fetching reminders...');
+            if (!reminderList) return; // Section might not be active
+            reminderList.innerHTML = ''; // Clear existing list
+            noRemindersText.textContent = "Loading reminders...";
+            noRemindersText.classList.remove('hidden');
+
+            try {
+                const response = await fetch(`${backendUrl}/api/reminders`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const reminders = await response.json();
+                console.log('Reminders received:', reminders);
+
+                if (reminders.length === 0) {
+                    checkReminderListEmpty(0);
+                } else {
+                    noRemindersText.classList.add('hidden');
+                    reminders.forEach(reminder => {
+                        const reminderElement = renderReminder(reminder);
+                        reminderList.appendChild(reminderElement);
+                    });
+                     checkReminderListEmpty(reminders.length);
+                }
+
+            } catch (error) {
+                console.error("Could not fetch reminders:", error);
+                noRemindersText.textContent = "Error loading reminders.";
+                noRemindersText.classList.remove('hidden');
+                checkReminderListEmpty(0); // Update count even on error
+            }
+        }
+
+        async function addReminder(event) {
+            event.preventDefault();
+            const reminderTextEl = document.getElementById('reminderText');
+            const reminderDateEl = document.getElementById('reminderDate');
+            const reminderText = reminderTextEl.value.trim();
+            const reminderDate = reminderDateEl.value; // HTML input gives "YYYY-MM-DDTHH:mm"
+
+            addReminderErrorEl.textContent = '';
+            addReminderSuccessEl.textContent = '';
+
+
+            if (!reminderText || !reminderDate) {
+                showFeedback(addReminderErrorEl, 'Please fill in both fields.');
+                return;
+            }
+
+            console.log(`Adding reminder: ${reminderText} at ${reminderDate}`);
+            disableButton(addReminderButton, "Adding...");
+
+            try {
+                const response = await fetch(`${backendUrl}/api/reminders`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        text: reminderText,
+                        reminder_datetime: reminderDate // Send ISO-like string directly
+                    }),
+                });
+
+                const newReminder = await response.json();
+
+                if (response.ok) { // Status 201 Created
+                    const reminderElement = renderReminder(newReminder);
+                    reminderList.prepend(reminderElement); // Add to top of list
+                    checkReminderListEmpty();
+                    document.getElementById('addReminderForm').reset(); // Clear form
+                    showFeedback(addReminderSuccessEl, 'Reminder added successfully!', false);
+                } else {
+                    console.error("Failed to add reminder:", newReminder.error);
+                    showFeedback(addReminderErrorEl, newReminder.error || 'Failed to add reminder.');
+                }
+
+            } catch (error) {
+                console.error("Error adding reminder:", error);
+                 showFeedback(addReminderErrorEl, 'An error occurred while adding reminder.');
+            } finally {
+                 enableButton(addReminderButton);
+            }
+        }
+
+        async function deleteReminder(event) {
+             const deleteButton = event.target.closest('.delete-reminder-btn');
+             if (deleteButton) {
+                 const reminderItem = deleteButton.closest('.reminder-item');
+                 const reminderId = reminderItem.dataset.id;
+
+                 if (reminderItem && reminderId && confirm('Are you sure you want to delete this reminder?')) {
+                     console.log(`Deleting reminder with ID: ${reminderId}`);
+
+                     // Animate out and remove visually first
+                     reminderItem.style.transition = 'opacity 0.3s ease, transform 0.3s ease, height 0.3s ease 0.1s, margin 0.3s ease 0.1s, padding 0.3s ease 0.1s, border 0.3s ease 0.1s';
+                     reminderItem.classList.add('opacity-0');
+                     reminderItem.style.transform = 'translateX(20px)';
+                     reminderItem.style.height = `${reminderItem.offsetHeight}px`;
+                     requestAnimationFrame(() => {
+                         reminderItem.style.height = '0px';
+                         reminderItem.style.paddingTop = '0px';
+                         reminderItem.style.paddingBottom = '0px';
+                         reminderItem.style.marginTop = '0px';
+                         reminderItem.style.marginBottom = '0px';
+                         reminderItem.style.borderWidth = '0px';
+                         reminderItem.style.overflow = 'hidden';
+                     });
+
+                     setTimeout(() => {
+                         reminderItem.remove();
+                         checkReminderListEmpty();
+                     }, 400);
+
+                     // Send request to backend
+                     try {
+                         const response = await fetch(`${backendUrl}/api/reminders/${reminderId}`, {
+                             method: 'DELETE',
+                         });
+
+                         if (!response.ok) {
+                             const errorData = await response.json();
+                             console.error(`Failed to delete reminder ${reminderId} on backend:`, errorData.error);
+                             alert(`Error: Could not delete reminder on the server. ${errorData.error || ''}. Please refresh.`);
+                         } else {
+                            console.log(`Successfully deleted reminder ${reminderId} on backend.`);
+                         }
+                     } catch (error) {
+                         console.error(`Network error deleting reminder ${reminderId}:`, error);
+                         alert(`Error: Could not reach server to delete reminder. Please refresh.`);
+                     }
+                 }
+             }
+        }
+
+        // --- FACULTIES ---
+        async function fetchFaculties(populateDropdowns = false) {
+            console.log('Fetching faculties...');
+            if (!facultyTableBody) return;
+            facultyTableBody.innerHTML = '<tr><td colspan="3" class="text-center text-gray-500 py-4">Loading faculties...</td></tr>';
+            if (populateDropdowns) {
+                 mapFacultySelect.innerHTML = '<option value="">Loading...</option>';
+                 viewFacultySelect.innerHTML = '<option value="">Loading...</option>';
+            }
+
+            try {
+                const response = await fetch(`${backendUrl}/api/faculties`);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const faculties = await response.json();
+
+                facultyTableBody.innerHTML = ''; // Clear loading state
+                if (populateDropdowns) {
+                     mapFacultySelect.innerHTML = '<option value="">Select Faculty</option>'; // Reset dropdown
+                     viewFacultySelect.innerHTML = '<option value="">Select Faculty</option>'; // Reset dropdown
+                }
+
+                if (faculties.length === 0) {
+                    facultyTableBody.innerHTML = '<tr><td colspan="3" class="text-center text-gray-500 py-4">No faculties found. Add one using the form.</td></tr>';
+                } else {
+                    faculties.forEach(faculty => {
+                        // Populate Table
+                        const row = facultyTableBody.insertRow();
+                        row.innerHTML = `
+                            <td>${faculty.faculty_id}</td>
+                            <td>${faculty.name}</td>
+                            <td>${faculty.faculty_code || 'N/A'}</td>
+                            `;
+                        // Populate Dropdowns if requested
+                        if (populateDropdowns) {
+                             const optionMap = document.createElement('option');
+                             optionMap.value = faculty.faculty_id;
+                             optionMap.textContent = faculty.name + (faculty.faculty_code ? ` (${faculty.faculty_code})` : '');
+                             mapFacultySelect.appendChild(optionMap);
+
+                             const optionView = document.createElement('option');
+                             optionView.value = faculty.faculty_id;
+                             optionView.textContent = faculty.name + (faculty.faculty_code ? ` (${faculty.faculty_code})` : '');
+                             viewFacultySelect.appendChild(optionView);
+                        }
+                    });
+                }
+                 // Update dashboard count
+                 if (facultyCountEl) facultyCountEl.textContent = faculties.length;
+
+            } catch (error) {
+                console.error("Could not fetch faculties:", error);
+                facultyTableBody.innerHTML = '<tr><td colspan="3" class="text-center text-red-500 py-4">Error loading faculties.</td></tr>';
+                if (populateDropdowns) {
+                     mapFacultySelect.innerHTML = '<option value="">Error loading</option>';
+                     viewFacultySelect.innerHTML = '<option value="">Error loading</option>';
+                }
+                 if (facultyCountEl) facultyCountEl.textContent = 'Err';
+            }
+        }
+
+        async function addFaculty(event) {
+            event.preventDefault();
+            const name = document.getElementById('facultyName').value.trim();
+            const code = document.getElementById('facultyCode').value.trim() || null; // Send null if empty
+
+            addFacultyErrorEl.textContent = '';
+            addFacultySuccessEl.textContent = '';
+
+            if (!name) {
+                showFeedback(addFacultyErrorEl, 'Faculty name is required.');
+                return;
+            }
+
+            disableButton(addFacultyButton, "Adding...");
+
+            try {
+                const response = await fetch(`${backendUrl}/api/faculties`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: name, faculty_code: code }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) { // Status 201
+                    showFeedback(addFacultySuccessEl, `Faculty "${result.name}" added successfully!`, false);
+                    document.getElementById('addFacultyForm').reset();
+                    fetchFaculties(true); // Refresh table and dropdowns
+                } else {
+                    console.error("Failed to add faculty:", result.error);
+                    showFeedback(addFacultyErrorEl, result.error || 'Failed to add faculty.');
+                }
+            } catch (error) {
+                 console.error("Error adding faculty:", error);
+                 showFeedback(addFacultyErrorEl, 'An error occurred while adding faculty.');
+            } finally {
+                enableButton(addFacultyButton);
+            }
+        }
+
+         // --- SUBJECTS ---
+        async function fetchSubjects(populateDropdown = false) {
+            console.log('Fetching subjects...');
+            if (!subjectTableBody) return;
+            subjectTableBody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500 py-4">Loading subjects...</td></tr>';
+             if (populateDropdown) {
+                 mapSubjectSelect.innerHTML = '<option value="">Loading...</option>';
+             }
+
+            try {
+                const response = await fetch(`${backendUrl}/api/subjects`);
+                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const subjects = await response.json();
+
+                subjectTableBody.innerHTML = ''; // Clear loading
+                 if (populateDropdown) {
+                     mapSubjectSelect.innerHTML = '<option value="">Select Subject</option>'; // Reset
+                 }
+
+                if (subjects.length === 0) {
+                    subjectTableBody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500 py-4">No subjects found. Add one using the form.</td></tr>';
+                } else {
+                    subjects.forEach(subject => {
+                        // Populate Table
+                        const row = subjectTableBody.insertRow();
+                        row.innerHTML = `
+                            <td>${subject.subject_id}</td>
+                            <td>${subject.code}</td>
+                            <td>${subject.name}</td>
+                            <td>${subject.is_lab ? 'Yes' : 'No'}</td>
+                            `;
+                         // Populate Dropdown if requested
+                         if (populateDropdown) {
+                             const option = document.createElement('option');
+                             option.value = subject.subject_id;
+                             option.textContent = `${subject.name} (${subject.code})`;
+                             mapSubjectSelect.appendChild(option);
+                         }
+                    });
+                }
+                 // Update dashboard count
+                 if (subjectCountEl) subjectCountEl.textContent = subjects.length;
+
+            } catch (error) {
+                console.error("Could not fetch subjects:", error);
+                subjectTableBody.innerHTML = '<tr><td colspan="4" class="text-center text-red-500 py-4">Error loading subjects.</td></tr>';
+                 if (populateDropdown) {
+                     mapSubjectSelect.innerHTML = '<option value="">Error loading</option>';
+                 }
+                 if (subjectCountEl) subjectCountEl.textContent = 'Err';
+            }
+        }
+
+        async function addSubject(event) {
+             event.preventDefault();
+             const code = document.getElementById('subjectCode').value.trim();
+             const name = document.getElementById('subjectName').value.trim();
+             const isLab = document.getElementById('subjectIsLab').checked;
+
+             addSubjectErrorEl.textContent = '';
+             addSubjectSuccessEl.textContent = '';
+
+             if (!code || !name) {
+                 showFeedback(addSubjectErrorEl, 'Subject code and name are required.');
+                 return;
+             }
+
+             disableButton(addSubjectButton, "Adding...");
+
+             try {
+                 const response = await fetch(`${backendUrl}/api/subjects`, {
+                     method: 'POST',
+                     headers: { 'Content-Type': 'application/json' },
+                     body: JSON.stringify({ code: code, name: name, is_lab: isLab }),
+                 });
+
+                 const result = await response.json();
+
+                 if (response.ok) { // Status 201
+                     showFeedback(addSubjectSuccessEl, `Subject "${result.name}" added successfully!`, false);
+                     document.getElementById('addSubjectForm').reset();
+                     fetchSubjects(true); // Refresh table and dropdown
+                 } else {
+                     console.error("Failed to add subject:", result.error);
+                     showFeedback(addSubjectErrorEl, result.error || 'Failed to add subject.');
+                 }
+             } catch (error) {
+                  console.error("Error adding subject:", error);
+                  showFeedback(addSubjectErrorEl, 'An error occurred while adding subject.');
+             } finally {
+                 enableButton(addSubjectButton);
+             }
+        }
+
+         // --- FACULTY-SUBJECT MAPPINGS ---
+        async function addFacultySubjectMapping(event) {
+            event.preventDefault();
+            const facultyId = mapFacultySelect.value;
+            const subjectId = mapSubjectSelect.value;
+
+            addMappingErrorEl.textContent = '';
+            addMappingSuccessEl.textContent = '';
+
+            if (!facultyId || !subjectId) {
+                showFeedback(addMappingErrorEl, 'Please select both a faculty and a subject.');
+                return;
+            }
+
+            disableButton(addMappingButton, "Assigning...");
+
+            try {
+                const response = await fetch(`${backendUrl}/api/faculty-subjects`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ faculty_id: facultyId, subject_id: subjectId }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) { // Status 201
+                    showFeedback(addMappingSuccessEl, result.message || 'Mapping added successfully!', false);
+                    // Optionally clear selection or refresh the view for the selected faculty
+                    mapSubjectSelect.value = ""; // Clear subject selection
+                     // If the currently viewed faculty is the one we just added to, refresh their list
+                     if (viewFacultySelect.value === facultyId) {
+                         displaySubjectsForFaculty(facultyId);
+                     }
+                } else {
+                     console.error("Failed to add mapping:", result.error);
+                     showFeedback(addMappingErrorEl, result.error || 'Failed to add mapping.');
+                }
+            } catch (error) {
+                 console.error("Error adding mapping:", error);
+                 showFeedback(addMappingErrorEl, 'An error occurred while adding the mapping.');
+            } finally {
+                enableButton(addMappingButton);
+            }
+        }
+
+        async function displaySubjectsForFaculty(facultyId) {
+             assignedSubjectsList.innerHTML = ''; // Clear previous list
+             assignedSubjectsList.classList.add('hidden');
+             assignmentsPlaceholder.textContent = 'Loading assignments...';
+             assignmentsPlaceholder.classList.remove('hidden');
+
+             if (!facultyId) {
+                 assignmentsPlaceholder.textContent = 'Select a faculty to see their assigned subjects.';
+                 return;
+             }
+
+             try {
+                 const response = await fetch(`${backendUrl}/api/faculty-subjects/${facultyId}`);
+                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                 const subjects = await response.json();
+
+                 if (subjects.length === 0) {
+                     assignmentsPlaceholder.textContent = 'No subjects assigned to this faculty yet.';
+                 } else {
+                     assignmentsPlaceholder.classList.add('hidden'); // Hide placeholder
+                     subjects.forEach(subject => {
+                         const li = document.createElement('li');
+                         li.className = 'flex justify-between items-center text-sm';
+                         li.innerHTML = `
+                             <span>${subject.name} (${subject.code}) ${subject.is_lab ? '<span class="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full ml-1">Lab</span>': ''}</span>
+                             <button class="delete-mapping-btn table-button delete-button" data-faculty-id="${facultyId}" data-subject-id="${subject.subject_id}" aria-label="Delete assignment">
+                                 Delete
+                             </button>
+                         `;
+                         assignedSubjectsList.appendChild(li);
+                     });
+                     assignedSubjectsList.classList.remove('hidden'); // Show list
+                 }
+
+             } catch (error) {
+                 console.error(`Error fetching subjects for faculty ${facultyId}:`, error);
+                 assignmentsPlaceholder.textContent = 'Error loading assignments.';
+                 assignmentsPlaceholder.classList.remove('hidden');
+             }
+        }
+
+         async function deleteFacultySubjectMapping(event) {
+             const deleteButton = event.target.closest('.delete-mapping-btn');
+             if (deleteButton) {
+                 const facultyId = deleteButton.dataset.facultyId;
+                 const subjectId = deleteButton.dataset.subjectId;
+                 const listItem = deleteButton.closest('li'); // Get the list item element
+
+                 if (facultyId && subjectId && confirm('Are you sure you want to remove this subject assignment?')) {
+                     console.log(`Deleting mapping: Faculty ${facultyId}, Subject ${subjectId}`);
+
+                     // Disable button temporarily
+                     deleteButton.disabled = true;
+                     deleteButton.textContent = 'Deleting...';
+
+                     try {
+                         const response = await fetch(`${backendUrl}/api/faculty-subjects/${facultyId}/${subjectId}`, {
+                             method: 'DELETE',
+                         });
+
+                         if (response.ok) {
+                             console.log('Mapping deleted successfully');
+                             // Animate out and remove the list item
+                             listItem.style.transition = 'opacity 0.3s ease, transform 0.3s ease, height 0.3s ease 0.1s, margin 0.3s ease 0.1s, padding 0.3s ease 0.1s';
+                             listItem.classList.add('opacity-0');
+                             listItem.style.transform = 'translateX(20px)';
+                             listItem.style.height = `${listItem.offsetHeight}px`;
+                             requestAnimationFrame(() => {
+                                 listItem.style.height = '0px';
+                                 listItem.style.paddingTop = '0px';
+                                 listItem.style.paddingBottom = '0px';
+                                 listItem.style.marginTop = '0px';
+                                 listItem.style.marginBottom = '0px';
+                                 listItem.style.overflow = 'hidden';
+                             });
+                             setTimeout(() => {
+                                 listItem.remove();
+                                 // Check if list is now empty
+                                 if (assignedSubjectsList.children.length === 0) {
+                                     assignmentsPlaceholder.textContent = 'No subjects assigned to this faculty yet.';
+                                     assignmentsPlaceholder.classList.remove('hidden');
+                                     assignedSubjectsList.classList.add('hidden');
+                                 }
+                             }, 400);
+
+                         } else {
+                             const errorData = await response.json();
+                             console.error('Failed to delete mapping:', errorData.error);
+                             alert(`Error: Could not delete assignment. ${errorData.error || ''}`);
+                             // Re-enable button on failure
+                             deleteButton.disabled = false;
+                             deleteButton.textContent = 'Delete';
+                         }
+                     } catch (error) {
+                         console.error('Network error deleting mapping:', error);
+                         alert('Error: Could not reach server to delete assignment.');
+                         // Re-enable button on failure
+                         deleteButton.disabled = false;
+                         deleteButton.textContent = 'Delete';
+                     }
+                 }
+             }
+         }
+
+
+        // --- DASHBOARD ---
+        async function updateDashboardCounts() {
+             // Fetch faculty count
+             try {
+                 const facResponse = await fetch(`${backendUrl}/api/faculties`);
+                 if (facResponse.ok) {
+                     const faculties = await facResponse.json();
+                     if (facultyCountEl) facultyCountEl.textContent = faculties.length;
+                 } else {
+                      if (facultyCountEl) facultyCountEl.textContent = '?';
+                 }
+             } catch (e) { if (facultyCountEl) facultyCountEl.textContent = '?'; }
+
+             // Fetch subject count
+             try {
+                 const subResponse = await fetch(`${backendUrl}/api/subjects`);
+                 if (subResponse.ok) {
+                     const subjects = await subResponse.json();
+                      if (subjectCountEl) subjectCountEl.textContent = subjects.length;
+                 } else {
+                      if (subjectCountEl) subjectCountEl.textContent = '?';
+                 }
+             } catch (e) { if (subjectCountEl) subjectCountEl.textContent = '?'; }
+
+             // Reminder count is updated via fetchReminders
+        }
+
+
+        // --- Mobile Sidebar Toggle Functions ---
+        function openMobileSidebar() {
+            sidebarOverlay.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                sidebar.classList.remove('-translate-x-full');
+                sidebarOverlay.classList.remove('opacity-0');
+            });
+        }
+
+        function closeMobileSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            sidebarOverlay.classList.add('opacity-0');
+            setTimeout(() => sidebarOverlay.classList.add('hidden'), 300);
+        }
+
+
+        // --- Event Listeners ---
+        navLinks.forEach(link => link.addEventListener('click', handleNavClick));
+        document.getElementById('loginForm').addEventListener('submit', handleLogin);
+        document.getElementById('signUpForm').addEventListener('submit', handleSignUp);
+        document.getElementById('showSignUp').addEventListener('click', (e) => { e.preventDefault(); showSection('signUpSection'); });
+        document.getElementById('showLogin').addEventListener('click', (e) => { e.preventDefault(); showSection('loginSection'); });
+        document.getElementById('logoutButton').addEventListener('click', (e) => { e.preventDefault(); handleLogout(); });
+        // document.getElementById('findButton').addEventListener('click', findAvailableTeachers); // Disabled
+        document.getElementById('addReminderForm').addEventListener('submit', addReminder);
+        reminderList.addEventListener('click', deleteReminder); // Use delegation
+
+        // Admin Form Listeners
+        document.getElementById('addFacultyForm').addEventListener('submit', addFaculty);
+        document.getElementById('addSubjectForm').addEventListener('submit', addSubject);
+        document.getElementById('addMappingForm').addEventListener('submit', addFacultySubjectMapping);
+
+        // Listener for viewing faculty assignments
+        viewFacultySelect.addEventListener('change', (event) => {
+             displaySubjectsForFaculty(event.target.value);
+        });
+        // Listener for deleting assignments (using event delegation)
+        assignedSubjectsList.addEventListener('click', deleteFacultySubjectMapping);
+
+
+        // Mobile Sidebar Toggles
+        openSidebarBtn.addEventListener('click', openMobileSidebar);
+        closeSidebarBtn.addEventListener('click', closeMobileSidebar);
+        sidebarOverlay.addEventListener('click', closeMobileSidebar);
+
+
+        // --- Initial Setup ---
+        hideAllSections();
+        loggedInSection.classList.add('hidden');
+        showSection('loginSection'); // Start on login page
+        checkReminderListEmpty(0); // Initial check for placeholder text
+        checkNotificationListEmpty(); // Initial check
+
+        function checkNotificationListEmpty() { // Keep this function for notifications if needed later
+            const notificationItems = notificationList.querySelectorAll('.notification-item');
+             if(noNotificationsText) {
+                noNotificationsText.classList.toggle('hidden', notificationItems.length > 0);
+             }
+        }
+
+    </script>
+
+</body>
+</html>
