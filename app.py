@@ -1,46 +1,46 @@
-# app.py: Flask Backend for Teacher Scheduler (with MySQL)
+
 
 import os
-import mysql.connector # Import MySQL connector
-from mysql.connector import Error # Import Error class
-from flask import Flask, request, jsonify, g # g is used to store db connection per request
-from flask_cors import CORS # Required for allowing requests from the frontend origin
-import datetime # Needed for TimeSlot time conversion
-import random # Needed for basic shuffling in generation
+import mysql.connector 
+from mysql.connector import Error 
+from flask import Flask, request, jsonify, g 
+from flask_cors import CORS 
+import datetime 
+import random 
 
-# --- App Configuration ---
+
 app = Flask(__name__)
-CORS(app) # Enable Cross-Origin Resource Sharing for all routes
+CORS(app) 
 
-# --- MySQL Configuration using User Provided Details ---
+
 MYSQL_CONFIG = {
-    'user': 'root',     # As provided by user
-    'password': '7530', # As provided by user
-    'host': 'localhost',# As provided by user
-    'database': 'timetable_db', # As provided by user
+    'user': 'root',     
+    'password': '7530', 
+    'host': 'localhost',
+    'database': 'timetable_db', 
     'raise_on_warnings': True
 }
-# --- End MySQL Configuration ---
 
-# IMPORTANT: Use a strong, secret key in a real application, preferably from environment variables
+
+
 app.config['SECRET_KEY'] = os.urandom(24)
 
-# --- Database Setup (MySQL) ---
+
 
 def get_db():
     """Opens a new database connection if there is none yet for the current request context."""
     if 'db' not in g:
         try:
-            # Establish the connection using the configuration dictionary
+            
             g.db = mysql.connector.connect(**MYSQL_CONFIG)
-            # Set session variables for better constraint handling if needed (optional)
-            # cursor = g.db.cursor()
-            # cursor.execute("SET SESSION sql_mode = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'")
-            # cursor.close()
+            
+            
+            
+            
         except Error as e:
-            # Log the error for debugging
+            
             print(f"Error connecting to MySQL Database: {e}")
-            raise e # Re-raise the exception to indicate failure
+            raise e 
     return g.db
 
 @app.teardown_appcontext
@@ -57,7 +57,7 @@ def init_db():
         cursor = db.cursor()
         print("Initializing MySQL database tables...")
 
-        # Users Table
+        
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -68,7 +68,7 @@ def init_db():
         """)
         print("Checked/Created users table.")
 
-        # Reminders Table
+        
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS reminders (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -78,7 +78,7 @@ def init_db():
         """)
         print("Checked/Created reminders table.")
 
-        # Faculties Table
+        
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS Faculties (
                 faculty_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -88,7 +88,7 @@ def init_db():
         """)
         print("Checked/Created Faculties table.")
 
-        # Subjects Table
+        
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS Subjects (
                 subject_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -99,7 +99,7 @@ def init_db():
         """)
         print("Checked/Created Subjects table.")
 
-        # FacultySubjects Table
+        
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS FacultySubjects (
                 faculty_subject_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -112,7 +112,7 @@ def init_db():
         """)
         print("Checked/Created FacultySubjects table.")
 
-        # Branches Table
+        
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS Branches (
                 branch_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -122,7 +122,7 @@ def init_db():
         """)
         print("Checked/Created Branches table.")
 
-        # Sections Table
+        
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS Sections (
                 section_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -131,7 +131,7 @@ def init_db():
         """)
         print("Checked/Created Sections table.")
 
-        # Classes Table
+        
         cursor.execute("""
              CREATE TABLE IF NOT EXISTS Classes (
                 class_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -145,8 +145,8 @@ def init_db():
         """)
         print("Checked/Created Classes table.")
 
-        # --- NEW: ClassSubjects Table (Example - Adapt as needed!) ---
-        # This table is crucial for knowing what needs scheduling
+        
+        
         cursor.execute("""
              CREATE TABLE IF NOT EXISTS ClassSubjects (
                 class_subject_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -159,9 +159,9 @@ def init_db():
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         """)
         print("Checked/Created ClassSubjects table (NEW).")
-        # --- END NEW ---
+        
 
-        # Locations Table
+        
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS Locations (
                 location_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -172,7 +172,7 @@ def init_db():
         """)
         print("Checked/Created Locations table.")
 
-        # TimeSlots Table
+        
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS TimeSlots (
                 slot_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -186,7 +186,7 @@ def init_db():
         """)
         print("Checked/Created TimeSlots table.")
 
-        # TimetableEntries Table
+        
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS TimetableEntries (
                 entry_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -217,11 +217,11 @@ def init_db():
         if 'db' in g and g.db and g.db.is_connected():
             g.db.rollback()
     finally:
-        if cursor: # Check if cursor was successfully created
+        if cursor: 
              cursor.close()
 
 
-# --- Helper Function to convert time objects ---
+
 def time_converter(o):
     """Converts datetime.timedelta objects (used for TIME type) to string for JSON."""
     if isinstance(o, datetime.timedelta):
@@ -233,7 +233,7 @@ def time_converter(o):
         return o.isoformat()
     return str(o)
 
-# --- API Endpoints ---
+
 
 @app.route('/')
 def index():
@@ -248,8 +248,8 @@ def index():
     except Error as e:
         return f"Backend running, but DB connection failed: {e}", 500
 
-# --- Authentication (Adapted for MySQL) ---
-# ... (signup and login routes remain the same) ...
+
+
 @app.route('/api/signup', methods=['POST'])
 def signup():
     """Handles user registration."""
@@ -259,7 +259,7 @@ def signup():
 
     db = get_db(); cursor = db.cursor()
     try:
-        # WARNING: Storing plain text passwords! Use hashing in production.
+        
         query = "INSERT INTO users (name, email, password) VALUES (%s, %s, %s)"
         cursor.execute(query, (name, email, password))
         db.commit(); user_id = cursor.lastrowid
@@ -276,7 +276,7 @@ def login():
 
     db = get_db(); cursor = db.cursor(dictionary=True)
     try:
-        # WARNING: Comparing plain text passwords! Use hashing in production.
+        
         query = "SELECT id, name, email FROM users WHERE email = %s AND password = %s"
         cursor.execute(query, (email, password))
         user = cursor.fetchone()
@@ -286,8 +286,8 @@ def login():
     finally: cursor.close()
 
 
-# --- Reminders (Adapted for MySQL) ---
-# ... (reminder routes remain the same) ...
+
+
 @app.route('/api/reminders', methods=['GET'])
 def get_reminders():
     """Fetches all reminders."""
@@ -333,10 +333,10 @@ def delete_reminder(reminder_id):
     except Error as e: db.rollback(); print(f"Error deleting reminder: {e}"); return jsonify({'error': 'An internal server error occurred'}), 500
     finally: cursor.close()
 
-# --- Admin Input Endpoints ---
 
-# --- Faculties ---
-# ... (faculty routes remain the same) ...
+
+
+
 @app.route('/api/faculties', methods=['POST'])
 def add_faculty():
     """Adds a new faculty member."""
@@ -369,8 +369,8 @@ def get_faculties():
     except Error as e: print(f"Error fetching faculties: {e}"); return jsonify({'error': 'An internal server error occurred'}), 500
     finally: cursor.close()
 
-# --- Subjects ---
-# ... (subject routes remain the same) ...
+
+
 @app.route('/api/subjects', methods=['POST'])
 def add_subject():
     """Adds a new subject."""
@@ -400,8 +400,8 @@ def get_subjects():
     except Error as e: print(f"Error fetching subjects: {e}"); return jsonify({'error': 'An internal server error occurred'}), 500
     finally: cursor.close()
 
-# --- Faculty-Subject Mappings ---
-# ... (faculty-subject mapping routes remain the same) ...
+
+
 @app.route('/api/faculty-subjects', methods=['POST'])
 def add_faculty_subject_mapping():
     """Creates a mapping between a faculty and a subject they can teach."""
@@ -445,8 +445,8 @@ def delete_faculty_subject_mapping(faculty_id, subject_id):
     finally: cursor.close()
 
 
-# --- Branches ---
-# ... (branch routes remain the same) ...
+
+
 @app.route('/api/branches', methods=['POST'])
 def add_branch():
     """Adds a new academic branch."""
@@ -477,8 +477,8 @@ def get_branches():
     finally: cursor.close()
 
 
-# --- Sections ---
-# ... (section routes remain the same) ...
+
+
 @app.route('/api/sections', methods=['POST'])
 def add_section():
     """Adds a new section designation (e.g., A, B)."""
@@ -508,14 +508,14 @@ def get_sections():
     except Error as e: print(f"Error fetching sections: {e}"); return jsonify({'error': 'An internal server error occurred'}), 500
     finally: cursor.close()
 
-# --- Classes ---
-# ... (class routes remain the same) ...
+
+
 @app.route('/api/classes', methods=['POST'])
 def add_class():
     """Adds a new class (combination of branch, section, year)."""
     data = request.get_json()
     branch_id = data.get('branch_id'); section_id = data.get('section_id'); year = data.get('year')
-    class_name = data.get('class_name') # Optional, can be generated
+    class_name = data.get('class_name') 
 
     if not branch_id or not section_id or not year:
         return jsonify({'error': 'Branch ID, Section ID, and Year are required'}), 400
@@ -562,8 +562,8 @@ def get_classes():
     finally: cursor.close()
 
 
-# --- Class Subject Requirements (NEW Endpoint Example) ---
-# You'll need endpoints to manage the ClassSubjects table
+
+
 @app.route('/api/class-subjects/<int:class_id>', methods=['GET'])
 def get_class_subjects(class_id):
     """Fetches subjects required for a specific class."""
@@ -593,7 +593,7 @@ def add_class_subject():
     data = request.get_json()
     class_id = data.get('class_id')
     subject_id = data.get('subject_id')
-    hours_per_week = data.get('hours_per_week', 1) # Default to 1 if not provided
+    hours_per_week = data.get('hours_per_week', 1) 
 
     if not class_id or not subject_id:
         return jsonify({'error': 'Class ID and Subject ID are required'}), 400
@@ -621,10 +621,10 @@ def add_class_subject():
     finally:
         cursor.close()
 
-# Add DELETE and PUT endpoints for ClassSubjects as needed
 
-# --- Locations ---
-# ... (location routes remain the same) ...
+
+
+
 @app.route('/api/locations', methods=['POST'])
 def add_location():
     """Adds a new location (room/lab)."""
@@ -654,8 +654,8 @@ def get_locations():
     except Error as e: print(f"Error fetching locations: {e}"); return jsonify({'error': 'An internal server error occurred'}), 500
     finally: cursor.close()
 
-# --- TimeSlots ---
-# ... (timeslot routes remain the same) ...
+
+
 @app.route('/api/timeslots', methods=['POST'])
 def add_timeslot():
     """Adds a new time slot definition."""
@@ -669,8 +669,8 @@ def add_timeslot():
     except ValueError: return jsonify({'error': 'Period number must be an integer'}), 400
     if period <= 0: return jsonify({'error': 'Period number must be positive'}), 400
     try:
-        # Basic time format validation (HH:MM or HH:MM:SS)
-        datetime.time.fromisoformat(start.split('T')[-1]) # Handle potential datetime-local format
+        
+        datetime.time.fromisoformat(start.split('T')[-1]) 
         datetime.time.fromisoformat(end.split('T')[-1])
     except ValueError: return jsonify({'error': 'Invalid time format. Use HH:MM or HH:MM:SS'}), 400
 
@@ -706,32 +706,32 @@ def get_timeslots():
     finally: cursor.close()
 
 
-# --- Timetable Generation ---
+
 
 def fetch_scheduling_data(cursor):
     """Fetches all necessary data for timetable generation."""
     data = {}
     try:
-        # Classes with year info
+        
         cursor.execute("SELECT class_id, year, class_name FROM Classes")
         data['classes'] = cursor.fetchall()
 
-        # Subjects with lab info
+        
         cursor.execute("SELECT subject_id, name, is_lab FROM Subjects")
-        data['subjects'] = {s['subject_id']: s for s in cursor.fetchall()} # Dict for easy lookup
+        data['subjects'] = {s['subject_id']: s for s in cursor.fetchall()} 
 
-        # Faculties
+        
         cursor.execute("SELECT faculty_id, name FROM Faculties")
-        data['faculties'] = {f['faculty_id']: f for f in cursor.fetchall()} # Dict for easy lookup
+        data['faculties'] = {f['faculty_id']: f for f in cursor.fetchall()} 
 
-        # Locations with lab info
+        
         cursor.execute("SELECT location_id, room_no, is_lab FROM Locations")
         data['locations'] = cursor.fetchall()
 
-        # Faculty-Subject mappings
+        
         cursor.execute("SELECT faculty_id, subject_id FROM FacultySubjects")
         mappings = cursor.fetchall()
-        data['faculty_subjects'] = {} # {subject_id: [faculty_id1, faculty_id2]}
+        data['faculty_subjects'] = {} 
         for mapping in mappings:
             sub_id = mapping['subject_id']
             fac_id = mapping['faculty_id']
@@ -739,23 +739,23 @@ def fetch_scheduling_data(cursor):
                 data['faculty_subjects'][sub_id] = []
             data['faculty_subjects'][sub_id].append(fac_id)
 
-        # TimeSlots with year group info
+        
         cursor.execute("SELECT slot_id, day_of_week, period_number, applicable_year_group FROM TimeSlots")
         data['timeslots'] = cursor.fetchall()
 
-        # Class Subject Requirements (Crucial!)
+        
         cursor.execute("""
             SELECT CS.class_id, CS.subject_id, CS.hours_per_week, S.is_lab
             FROM ClassSubjects CS
             JOIN Subjects S ON CS.subject_id = S.subject_id
         """)
         requirements = cursor.fetchall()
-        data['class_subject_requirements'] = {} # {class_id: [(subject_id, hours, is_lab), ...]}
+        data['class_subject_requirements'] = {} 
         for req in requirements:
             cls_id = req['class_id']
             if cls_id not in data['class_subject_requirements']:
                 data['class_subject_requirements'][cls_id] = []
-            # Append tuple: (subject_id, hours_needed, is_lab)
+            
             data['class_subject_requirements'][cls_id].append((req['subject_id'], req['hours_per_week'], bool(req['is_lab'])))
 
         return data
@@ -775,19 +775,19 @@ def generate_timetable():
     """
     print("Received request to generate timetable.")
     db = get_db()
-    cursor = db.cursor(dictionary=True) # Use dictionary cursor for easier data access
+    cursor = db.cursor(dictionary=True) 
     generated_entries = 0
     failed_assignments = 0
 
     try:
-        # 1. Clear existing timetable entries
+        
         print("Clearing previous timetable entries...")
         cursor.execute("DELETE FROM TimetableEntries")
-        # Optional: Reset auto-increment if needed (use with caution)
-        # cursor.execute("ALTER TABLE TimetableEntries AUTO_INCREMENT = 1")
+        
+        
         print(f"{cursor.rowcount} previous entries deleted.")
 
-        # 2. Fetch all necessary data
+        
         print("Fetching scheduling data...")
         scheduling_data = fetch_scheduling_data(cursor)
         if not scheduling_data:
@@ -797,29 +797,29 @@ def generate_timetable():
         subjects_dict = scheduling_data['subjects']
         faculties_dict = scheduling_data['faculties']
         locations = scheduling_data['locations']
-        faculty_subjects = scheduling_data['faculty_subjects'] # {subj_id: [fac_id1, ...]}
+        faculty_subjects = scheduling_data['faculty_subjects'] 
         timeslots = scheduling_data['timeslots']
-        class_reqs = scheduling_data['class_subject_requirements'] # {cls_id: [(subj_id, hours, is_lab), ...]}
+        class_reqs = scheduling_data['class_subject_requirements'] 
 
-        # Separate locations into labs and lecture rooms
+        
         lecture_rooms = [loc for loc in locations if not loc['is_lab']]
         lab_rooms = [loc for loc in locations if loc['is_lab']]
 
-        # Data structures to track resource usage
-        # {slot_id: faculty_id}
+        
+        
         faculty_schedule = {}
-        # {slot_id: location_id}
+        
         location_schedule = {}
-        # {slot_id: class_id}
+        
         class_schedule = {}
-        # Track hours scheduled for each class-subject requirement
-        # {(class_id, subject_id): hours_scheduled}
+        
+        
         hours_tracker = {}
 
-        # --- Simple Greedy Algorithm ---
+        
         print("Starting basic greedy assignment...")
 
-        # Create list of assignments needed: (class_id, subject_id, is_lab) repeated 'hours' times
+        
         assignments_needed = []
         for cls in classes:
             cls_id = cls['class_id']
@@ -827,18 +827,18 @@ def generate_timetable():
                 for subject_id, hours, is_lab in class_reqs[cls_id]:
                     for _ in range(hours):
                          assignments_needed.append({'class_id': cls_id, 'subject_id': subject_id, 'is_lab': is_lab, 'year': cls['year']})
-                    hours_tracker[(cls_id, subject_id)] = 0 # Initialize tracker
+                    hours_tracker[(cls_id, subject_id)] = 0 
 
-        # Shuffle assignments to avoid simple biases (optional)
+        
         random.shuffle(assignments_needed)
 
-        # Get timeslots ordered (e.g., by day then period)
-        # Already ordered by query in get_timeslots, but let's sort here just in case
+        
+        
         timeslots.sort(key=lambda ts: (('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday').index(ts['day_of_week']), ts['period_number']))
 
-        new_entries_data = [] # Store successful assignments to insert later
+        new_entries_data = [] 
 
-        # Iterate through each needed assignment
+        
         for assignment in assignments_needed:
             cls_id = assignment['class_id']
             subject_id = assignment['subject_id']
@@ -846,24 +846,24 @@ def generate_timetable():
             cls_year = assignment['year']
             found_slot = False
 
-            # Check if already fully scheduled for this class-subject
+            
             req_hours = next((h for s, h, l in class_reqs.get(cls_id, []) if s == subject_id), 0)
             if hours_tracker.get((cls_id, subject_id), 0) >= req_hours:
-                 continue # Already done with this specific class-subject requirement
+                 continue 
 
-            # Find suitable faculties
+            
             possible_faculty_ids = faculty_subjects.get(subject_id, [])
             if not possible_faculty_ids:
                 print(f"Warning: No faculty found for subject {subject_id}. Skipping assignment for class {cls_id}.")
                 failed_assignments += 1
                 continue
 
-            # Iterate through available timeslots appropriate for the class year
+            
             for slot in timeslots:
                 slot_id = slot['slot_id']
                 slot_year_group = slot['applicable_year_group']
 
-                # Check if timeslot is applicable to the class year
+                
                 year_group_match = False
                 if slot_year_group == 'ALL':
                     year_group_match = True
@@ -873,18 +873,18 @@ def generate_timetable():
                      year_group_match = True
 
                 if not year_group_match:
-                    continue # Skip slot not applicable to this year
+                    continue 
 
-                # Check if class is already scheduled for this slot
+                
                 if class_schedule.get(slot_id) == cls_id:
                     continue
 
-                # Try to find an available faculty
+                
                 available_faculty_id = None
-                random.shuffle(possible_faculty_ids) # Try faculties in random order
+                random.shuffle(possible_faculty_ids) 
                 for fac_id in possible_faculty_ids:
-                    if faculty_schedule.get(slot_id) != fac_id: # Check if faculty is free
-                         # Double check this specific faculty is not assigned anywhere else in this slot
+                    if faculty_schedule.get(slot_id) != fac_id: 
+                         
                          is_faculty_busy = False
                          for s_id, booked_fac_id in faculty_schedule.items():
                               if s_id == slot_id and booked_fac_id == fac_id:
@@ -892,19 +892,19 @@ def generate_timetable():
                                    break
                          if not is_faculty_busy:
                               available_faculty_id = fac_id
-                              break # Found a free faculty
+                              break 
 
                 if not available_faculty_id:
-                    continue # No free faculty found for this slot
+                    continue 
 
-                # Try to find an available location
+                
                 available_location_id = None
                 possible_locations = lab_rooms if is_lab else lecture_rooms
-                random.shuffle(possible_locations) # Try locations in random order
+                random.shuffle(possible_locations) 
                 for loc in possible_locations:
                     loc_id = loc['location_id']
-                    if location_schedule.get(slot_id) != loc_id: # Check if location is free
-                         # Double check this specific location is not assigned anywhere else in this slot
+                    if location_schedule.get(slot_id) != loc_id: 
+                         
                          is_location_busy = False
                          for s_id, booked_loc_id in location_schedule.items():
                               if s_id == slot_id and booked_loc_id == loc_id:
@@ -912,34 +912,34 @@ def generate_timetable():
                                    break
                          if not is_location_busy:
                               available_location_id = loc_id
-                              break # Found a free location
+                              break 
 
                 if not available_location_id:
-                    continue # No free location found for this slot
+                    continue 
 
-                # --- If we reach here, we found a slot, faculty, and location! ---
+                
                 print(f"Assigning Class {cls_id}, Subj {subject_id} to Slot {slot_id}, Fac {available_faculty_id}, Loc {available_location_id}")
 
-                # Record the assignment
+                
                 faculty_schedule[slot_id] = available_faculty_id
                 location_schedule[slot_id] = available_location_id
                 class_schedule[slot_id] = cls_id
                 hours_tracker[(cls_id, subject_id)] = hours_tracker.get((cls_id, subject_id), 0) + 1
 
-                # Store data for batch insert
+                
                 new_entries_data.append((
                     cls_id, slot_id, subject_id, available_faculty_id, available_location_id
                 ))
 
                 found_slot = True
-                break # Move to the next assignment
+                break 
 
             if not found_slot:
                  print(f"Warning: Could not find suitable slot/faculty/location for Class {cls_id}, Subject {subject_id}")
                  failed_assignments += 1
 
 
-        # 3. Batch Insert the generated entries
+        
         if new_entries_data:
             print(f"Attempting to insert {len(new_entries_data)} generated entries...")
             insert_query = """
@@ -947,7 +947,7 @@ def generate_timetable():
                 VALUES (%s, %s, %s, %s, %s)
             """
             try:
-                 # Use executemany for efficiency
+                 
                  cursor.executemany(insert_query, new_entries_data)
                  generated_entries = cursor.rowcount
                  db.commit()
@@ -955,7 +955,7 @@ def generate_timetable():
             except Error as insert_error:
                  db.rollback()
                  print(f"Error during batch insert: {insert_error}")
-                 # Attempt individual inserts if batch fails due to a single conflict (less efficient)
+                 
                  print("Attempting individual inserts...")
                  generated_entries = 0
                  individual_failures = 0
@@ -970,13 +970,13 @@ def generate_timetable():
                      db.commit()
                      print(f"Successfully inserted {generated_entries} entries individually.")
                  if individual_failures > 0:
-                      failed_assignments += individual_failures # Count these as failed too
+                      failed_assignments += individual_failures 
 
 
         else:
             print("No timetable entries were generated.")
 
-        # 4. Return result
+        
         message = f"Timetable generation process finished. Successfully generated {generated_entries} entries."
         if failed_assignments > 0:
             message += f" Failed to schedule {failed_assignments} required periods due to conflicts or lack of resources."
@@ -984,16 +984,16 @@ def generate_timetable():
         return jsonify({'message': message, 'entries_generated': generated_entries, 'failed_assignments': failed_assignments}), 200
 
     except Error as e:
-        db.rollback() # Rollback any partial changes
+        db.rollback() 
         print(f"Error during timetable generation: {e}")
         return jsonify({'error': f'An internal server error occurred during generation: {e}'}), 500
     finally:
         cursor.close()
 
 
-# --- Main Execution ---
+
 if __name__ == '__main__':
     with app.app_context():
-         init_db() # Ensure tables (including ClassSubjects) exist
-    # Run on port 5000 as specified in user's last code snippet
-    app.run(host='0.0.0.0', port=5000, debug=True) # Debug=True helps during development
+         init_db() 
+    
+    app.run(host='0.0.0.0', port=5000, debug=True) 
