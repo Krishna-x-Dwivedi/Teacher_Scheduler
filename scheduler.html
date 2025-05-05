@@ -16,13 +16,13 @@
                     colors: {
                         primary: { // Refined primary palette (Indigo)
                             light: '#e0e7ff', // indigo-100
-                            DEFAULT: '#4f46e5', // indigo-600
+                            lighter: '#4f46e5', // indigo-600
                             dark: '#3730a3', // indigo-800
                             darker: '#312e81', // indigo-900
                         },
                         secondary: { // Refined secondary palette (Emerald)
                             light: '#d1fae5', // emerald-100
-                            DEFAULT: '#10b981', // emerald-500
+                            lighter: '#10b981', // emerald-500
                             dark: '#047857', // emerald-700
                         },
                         accent: { // Accent color (e.g., for notifications)
@@ -35,7 +35,7 @@
                         },
                         gray: { // Enhanced gray palette
                             light: '#f9fafb', // gray-50
-                            DEFAULT: '#6b7280', // gray-500
+                            lighter: '#6b7280', // gray-500
                             dark: '#374151', // gray-700
                             darker: '#111827', // gray-900
                         },
@@ -102,7 +102,7 @@
             background-color: theme('colors.primary.darker'); /* Darker indigo */
             color: white;
             font-weight: 600;
-            box-shadow: inset 3px 0 0 theme('colors.secondary.DEFAULT'); /* Active indicator */
+            box-shadow: inset 3px 0 0 theme('colors.secondary.lighter'); /* Active indicator */
         }
          .nav-link:not(.active):hover {
              background-color: theme('colors.primary.dark'); /* Slightly lighter dark on hover */
@@ -138,7 +138,7 @@
         }
         input:focus, select:focus {
             outline: none;
-            border-color: theme('colors.primary.DEFAULT');
+            border-color: theme('colors.primary.lighter');
             box-shadow: 0 0 0 3px theme('colors.primary.light'); /* Focus ring */
         }
         label {
@@ -158,7 +158,7 @@
         }
         input[type="checkbox"]:focus {
              box-shadow: 0 0 0 3px theme('colors.primary.light');
-             border-color: theme('colors.primary.DEFAULT');
+             border-color: theme('colors.primary.lighter');
         }
 
 
@@ -343,7 +343,7 @@
 
     <div class="flex-1 flex flex-col overflow-hidden">
         <header class="bg-white shadow-sm p-4 flex justify-between items-center md:hidden print:hidden">
-            <button id="openSidebarBtn" class="text-gray-600 hover:text-primary-DEFAULT focus:outline-none">
+            <button id="openSidebarBtn" class="text-gray-600 hover:text-primary-lighter focus:outline-none">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
             </button>
             <span class="text-xl font-semibold text-gray-700">Scheduler</span>
@@ -355,17 +355,17 @@
             <section id="loginSection" class="app-section">
                 <div class="auth-form-container">
                     <div class="text-center mb-8">
-                         <svg class="w-12 h-12 mx-auto text-primary-DEFAULT" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                         <svg class="w-12 h-12 mx-auto text-primary-lighter" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                          <h2 class="mt-2 text-3xl font-extrabold text-center text-gray-darker">Welcome Back!</h2>
-                         <p class="mt-1 text-center text-gray-DEFAULT">Sign in to continue</p>
+                         <p class="mt-1 text-center text-gray-lighter">Sign in to continue</p>
                     </div>
                     <form id="loginForm" class="space-y-6">
                         <div> <label for="loginEmail">Email Address</label> <input type="email" id="loginEmail" name="email" required placeholder="you@example.com"> </div>
                         <div> <label for="loginPassword">Password</label> <input type="password" id="loginPassword" name="password" required placeholder="••••••••"> </div>
-                        <div class="flex items-center justify-end"> <a href="#" class="text-sm font-medium text-primary-DEFAULT hover:text-primary-dark hover:underline">Forgot password?</a> </div>
+                        <div class="flex items-center justify-end"> <a href="#" class="text-sm font-medium text-primary-lighter hover:text-primary-dark hover:underline">Forgot password?</a> </div>
                         <div id="loginError" class="error-message"></div>
-                        <button type="submit" id="loginSubmitButton" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-primary-DEFAULT hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-DEFAULT"> Sign In </button>
-                        <p class="mt-6 text-center text-sm text-gray-DEFAULT"> Don't have an account? <a href="#" id="showSignUp" class="font-medium text-primary-DEFAULT hover:text-primary-dark hover:underline">Sign Up</a> </p>
+                        <button type="submit" id="loginSubmitButton" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-primary-lighter hover:bg-primary-lighter focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-lighter"> Sign In </button>
+                        <p class="mt-6 text-center text-sm text-gray-lighter"> Don't have an account? <a href="#" id="showSignUp" class="font-medium text-primary-lighter hover:text-primary-dark hover:underline">Sign Up</a> </p>
                     </form>
                 </div>
             </section>
@@ -373,9 +373,9 @@
             <section id="signUpSection" class="app-section">
                  <div class="auth-form-container">
                      <div class="text-center mb-8">
-                         <svg class="w-12 h-12 mx-auto text-primary-DEFAULT" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                         <svg class="w-12 h-12 mx-auto text-primary-lighter" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
                          <h2 class="mt-2 text-3xl font-extrabold text-center text-gray-darker">Create Account</h2>
-                         <p class="mt-1 text-center text-gray-DEFAULT">Get started with the scheduler</p>
+                         <p class="mt-1 text-center text-gray-lighter">Get started with the scheduler</p>
                     </div>
                     <form id="signUpForm" class="space-y-5">
                         <div> <label for="signUpName">Full Name</label> <input type="text" id="signUpName" name="name" required placeholder="Your Name"> </div>
@@ -383,8 +383,8 @@
                         <div> <label for="signUpPassword">Password</label> <input type="password" id="signUpPassword" name="password" required placeholder="Create a password"> </div>
                         <div> <label for="signUpConfirmPassword">Confirm Password</label> <input type="password" id="signUpConfirmPassword" name="confirmPassword" required placeholder="Confirm your password"> </div>
                         <div id="signUpError" class="error-message"></div>
-                        <button type="submit" id="signUpSubmitButton" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-primary-DEFAULT hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-DEFAULT"> Sign Up </button>
-                         <p class="mt-6 text-center text-sm text-gray-DEFAULT"> Already have an account? <a href="#" id="showLogin" class="font-medium text-primary-DEFAULT hover:text-primary-dark hover:underline">Sign In</a> </p>
+                        <button type="submit" id="signUpSubmitButton" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-primary-lighter hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-lighter"> Sign Up </button>
+                         <p class="mt-6 text-center text-sm text-gray-lighter"> Already have an account? <a href="#" id="showLogin" class="font-medium text-primary-lighter hover:text-primary-dark hover:underline">Sign In</a> </p>
                     </form>
                 </div>
             </section>
@@ -417,12 +417,12 @@
                                 <div> <label for="reminderText">Reminder Text</label> <input type="text" id="reminderText" name="reminderText" required placeholder="e.g., Staff Meeting"> </div>
                                 <div> <label for="reminderDate">Date & Time</label> <input type="datetime-local" id="reminderDate" name="reminderDate" required> </div>
                                 <div id="addReminderError" class="form-error"></div> <div id="addReminderSuccess" class="form-success"></div>
-                                <button type="submit" id="addReminderButton" class="w-full bg-secondary-DEFAULT hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-DEFAULT focus:ring-offset-2"> <span class="flex items-center justify-center"> <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg> Add Reminder </span> </button>
+                                <button type="submit" id="addReminderButton" class="w-full bg-secondary-lighter hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-lighter focus:ring-offset-2"> <span class="flex items-center justify-center"> <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg> Add Reminder </span> </button>
                             </form>
                         </div>
                          <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
                             <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Upcoming Reminders</h2>
-                            <div id="reminderList" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar pr-2"> <p id="noRemindersText" class="text-center text-gray-DEFAULT pt-4">Loading reminders...</p> </div>
+                            <div id="reminderList" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar pr-2"> <p id="noRemindersText" class="text-center text-gray-lighter pt-4">Loading reminders...</p> </div>
                         </div>
                     </div>
                 </section>
@@ -430,10 +430,10 @@
                 <section id="notificationsSection" class="app-section p-4 sm:p-6 lg:p-8">
                     <h1 class="text-3xl font-bold text-gray-darker mb-6">Notifications</h1>
                     <div class="bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
-                         <div class="flex justify-between items-center mb-5 border-b border-gray-200 pb-3"> <h2 class="text-xl font-semibold text-gray-darker">Recent Activity</h2> <button class="text-sm font-medium text-primary-DEFAULT hover:underline focus:outline-none">Mark all as read</button> </div>
+                         <div class="flex justify-between items-center mb-5 border-b border-gray-200 pb-3"> <h2 class="text-xl font-semibold text-gray-darker">Recent Activity</h2> <button class="text-sm font-medium text-primary-lighter hover:underline focus:outline-none">Mark all as read</button> </div>
                          <div id="notificationList" class="space-y-4 max-h-[65vh] overflow-y-auto custom-scrollbar pr-2">
-                            <div class="notification-item flex items-start p-4 bg-accent-blue border-l-4 border-accent-blueDark rounded-r-md shadow-sm"> <svg class="w-6 h-6 text-accent-blueDark mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <div> <p class="font-medium text-gray-darker">System Update: MySQL integration complete.</p> <p class="text-sm text-gray-DEFAULT">Now</p> </div> </div>
-                             <p id="noNotificationsText" class="text-center text-gray-DEFAULT pt-4 hidden">You're all caught up!</p>
+                            <div class="notification-item flex items-start p-4 bg-accent-blue border-l-4 border-accent-blueDark rounded-r-md shadow-sm"> <svg class="w-6 h-6 text-accent-blueDark mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <div> <p class="font-medium text-gray-darker">System Update: MySQL integration complete.</p> <p class="text-sm text-gray-lighter">Now</p> </div> </div>
+                             <p id="noNotificationsText" class="text-center text-gray-lighter pt-4 hidden">You're all caught up!</p>
                         </div>
                     </div>
                 </section>
@@ -447,7 +447,7 @@
                                 <div> <label for="facultyName">Faculty Name</label> <input type="text" id="facultyName" name="facultyName" required placeholder="e.g., Prof. Anil Kumar"> </div>
                                 <div> <label for="facultyCode">Faculty Code (Optional)</label> <input type="text" id="facultyCode" name="facultyCode" placeholder="e.g., AK001"> </div>
                                 <div id="addFacultyError" class="form-error"></div> <div id="addFacultySuccess" class="form-success"></div>
-                                <button type="submit" id="addFacultyButton" class="w-full bg-secondary-DEFAULT hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-DEFAULT focus:ring-offset-2"> Add Faculty </button>
+                                <button type="submit" id="addFacultyButton" class="w-full bg-secondary-lighter hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-lighter focus:ring-offset-2"> Add Faculty </button>
                             </form>
                         </div>
                         <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
@@ -470,9 +470,9 @@
                             <form id="addSubjectForm" class="space-y-4">
                                 <div> <label for="subjectCode">Subject Code</label> <input type="text" id="subjectCode" name="subjectCode" required placeholder="e.g., CS-301"> </div>
                                 <div> <label for="subjectName">Subject Name</label> <input type="text" id="subjectName" name="subjectName" required placeholder="e.g., Data Structures"> </div>
-                                <div class="flex items-center"> <input type="checkbox" id="subjectIsLab" name="subjectIsLab" class="form-checkbox h-5 w-5 text-primary-DEFAULT"> <label for="subjectIsLab" class="ml-2 text-sm text-gray-700 !mb-0">Is this a Lab subject?</label> </div>
+                                <div class="flex items-center"> <input type="checkbox" id="subjectIsLab" name="subjectIsLab" class="form-checkbox h-5 w-5 text-primary-lighter"> <label for="subjectIsLab" class="ml-2 text-sm text-gray-700 !mb-0">Is this a Lab subject?</label> </div>
                                 <div id="addSubjectError" class="form-error"></div> <div id="addSubjectSuccess" class="form-success"></div>
-                                <button type="submit" id="addSubjectButton" class="w-full bg-secondary-DEFAULT hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-DEFAULT focus:ring-offset-2"> Add Subject </button>
+                                <button type="submit" id="addSubjectButton" class="w-full bg-secondary-lighter hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-lighter focus:ring-offset-2"> Add Subject </button>
                             </form>
                         </div>
                         <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
@@ -496,7 +496,7 @@
                                 <div> <label for="mapFacultySelect">Select Faculty</label> <select id="mapFacultySelect" name="mapFacultySelect" required> <option value="">Loading faculties...</option> </select> </div>
                                 <div> <label for="mapSubjectSelect">Select Subject to Assign</label> <select id="mapSubjectSelect" name="mapSubjectSelect" required> <option value="">Loading subjects...</option> </select> </div>
                                 <div id="addMappingError" class="form-error"></div> <div id="addMappingSuccess" class="form-success"></div>
-                                <button type="submit" id="addMappingButton" class="w-full bg-secondary-DEFAULT hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-DEFAULT focus:ring-offset-2"> Assign Subject </button>
+                                <button type="submit" id="addMappingButton" class="w-full bg-secondary-lighter hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-lighter focus:ring-offset-2"> Assign Subject </button>
                             </form>
                         </div>
                         <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
@@ -516,7 +516,7 @@
                                 <div> <label for="branchName">Branch Name</label> <input type="text" id="branchName" name="branchName" required placeholder="e.g., Computer Science & Engineering"> </div>
                                 <div> <label for="branchCode">Branch Code (Optional)</label> <input type="text" id="branchCode" name="branchCode" placeholder="e.g., CSE"> </div>
                                 <div id="addBranchError" class="form-error"></div> <div id="addBranchSuccess" class="form-success"></div>
-                                <button type="submit" id="addBranchButton" class="w-full bg-secondary-DEFAULT hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-DEFAULT focus:ring-offset-2"> Add Branch </button>
+                                <button type="submit" id="addBranchButton" class="w-full bg-secondary-lighter hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-lighter focus:ring-offset-2"> Add Branch </button>
                             </form>
                         </div>
                         <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
@@ -539,7 +539,7 @@
                             <form id="addSectionForm" class="space-y-4">
                                 <div> <label for="sectionName">Section Name/Letter</label> <input type="text" id="sectionName" name="sectionName" required placeholder="e.g., A, B, Alpha"> </div>
                                 <div id="addSectionError" class="form-error"></div> <div id="addSectionSuccess" class="form-success"></div>
-                                <button type="submit" id="addSectionButton" class="w-full bg-secondary-DEFAULT hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-DEFAULT focus:ring-offset-2"> Add Section </button>
+                                <button type="submit" id="addSectionButton" class="w-full bg-secondary-lighter hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-lighter focus:ring-offset-2"> Add Section </button>
                             </form>
                         </div>
                         <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
@@ -565,7 +565,7 @@
                                 <div> <label for="classYear">Year</label> <input type="number" id="classYear" name="classYear" required placeholder="e.g., 1, 2, 3" min="1"> </div>
                                 <div> <label for="className">Class Name (Optional)</label> <input type="text" id="className" name="className" placeholder="Auto-generated if blank"> </div>
                                 <div id="addClassError" class="form-error"></div> <div id="addClassSuccess" class="form-success"></div>
-                                <button type="submit" id="addClassButton" class="w-full bg-secondary-DEFAULT hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-DEFAULT focus:ring-offset-2"> Add Class </button>
+                                <button type="submit" id="addClassButton" class="w-full bg-secondary-lighter hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-lighter focus:ring-offset-2"> Add Class </button>
                             </form>
                         </div>
                         <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
@@ -798,7 +798,7 @@
             reminderDiv.innerHTML = `
                 <div>
                     <p class="font-medium text-gray-darker break-words">${reminder.text}</p>
-                    <p class="text-sm text-gray-DEFAULT">${formattedDate}</p>
+                    <p class="text-sm text-gray-lighter">${formattedDate}</p>
                 </div>
                 <button class="delete-reminder-btn table-button delete-button" aria-label="Delete reminder">
                     Delete
