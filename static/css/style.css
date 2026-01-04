@@ -1,0 +1,198 @@
+
+/* Base body styling */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f3f4f6; /* gray-100 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+/* Smooth transitions */
+button, select, input, a, [role="button"], .app-section, aside {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Smoother cubic-bezier */
+}
+/* Hide sections by default, prepare for animation */
+.app-section {
+    display: none; /* Initially hidden */
+    opacity: 0;
+    /* Animation applied via JS */
+}
+.app-section.active-section {
+    opacity: 1;
+    /* Apply animation when active */
+    animation: fadeIn 0.6s ease-out forwards; /* Use fadeIn animation */
+}
+
+/* Active navigation link style */
+.nav-link.active {
+    background-color: theme('colors.primary.darker'); /* Darker indigo */
+    color: white;
+    font-weight: 600;
+    box-shadow: inset 3px 0 0 theme('colors.secondary.lighter'); /* Active indicator */
+}
+.nav-link:not(.active):hover {
+    background-color: theme('colors.primary.dark'); /* Slightly lighter dark on hover */
+    color: theme('colors.indigo.100');
+}
+
+/* Custom scrollbar styling */
+.custom-scrollbar::-webkit-scrollbar { width: 8px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: theme('colors.gray.200'); border-radius: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: theme('colors.gray.400'); border-radius: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: theme('colors.gray.500'); }
+
+/* Styling for form inputs & selects */
+input[type="email"], input[type="password"], input[type="text"], input[type="datetime-local"], input[type="number"], select { /* Added number type */
+    appearance: none; /* Remove default styling */
+    background-color: #fff;
+    border: 1px solid theme('colors.gray.300');
+    border-radius: 0.5rem; /* rounded-lg */
+    padding: 0.875rem 1rem; /* Increased padding slightly */
+    width: 100%;
+    font-size: 0.875rem; /* text-sm */
+    line-height: 1.25rem;
+    color: theme('colors.gray.darker');
+    box-shadow: theme('boxShadow.sm');
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+select { /* Add dropdown arrow for selects */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem; /* Make space for arrow */
+}
+input:focus, select:focus {
+    outline: none;
+    border-color: theme('colors.primary.lighter');
+    box-shadow: 0 0 0 3px theme('colors.primary.light'); /* Focus ring */
+}
+label {
+    font-weight: 500; /* medium */
+    color: theme('colors.gray.dark');
+    margin-bottom: 0.25rem; /* Added slight margin below label */
+    display: block; /* Ensure label takes full width */
+}
+input[type="checkbox"] { /* Basic checkbox style */
+    appearance: auto;
+    width: auto;
+    height: 1rem;
+    width: 1rem;
+    margin-right: 0.5rem;
+    box-shadow: none;
+    border-radius: 0.25rem;
+}
+input[type="checkbox"]:focus {
+    box-shadow: 0 0 0 3px theme('colors.primary.light');
+    border-color: theme('colors.primary.lighter');
+}
+
+
+/* Card hover effect */
+.hover-card {
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+.hover-card:hover {
+    transform: translateY(-4px);
+    box-shadow: theme('boxShadow.lg'); /* Use larger shadow on hover */
+}
+
+/* Centering for Login/Signup Sections */
+main {
+    display: flex;
+    flex-direction: column; /* Stack sections vertically */
+}
+/* Ensure login/signup sections take full available height and center their content */
+#loginSection, #signUpSection {
+    flex-grow: 1; /* Allow section to grow */
+    display: flex;
+    flex-direction: column; /* Stack image and form */
+    align-items: center; /* Center horizontally */
+    justify-content: center; /* Center vertically */
+    padding: 2rem 1rem; /* Add padding */
+    width: 100%; /* Take full width */
+}
+/* Style for the form container within login/signup */
+.auth-form-container {
+    background-color: white;
+    padding: 2.5rem; /* Increased padding */
+    border-radius: 0.75rem; /* rounded-xl */
+    box-shadow: theme('boxShadow.medium');
+    width: 100%;
+    max-width: 28rem; /* max-w-md */
+    animation: slideInUp 0.6s ease-out forwards; /* Add slide-in animation */
+}
+.error-message {
+    color: theme('colors.accent.redDark');
+    font-size: 0.875rem; /* text-sm */
+    margin-top: 1rem;
+    text-align: center;
+    min-height: 1.25rem; /* Reserve space */
+}
+/* General Form Error Styling */
+.form-error {
+        color: theme('colors.accent.redDark');
+        font-size: 0.875rem; /* text-sm */
+        margin-top: 0.5rem;
+        min-height: 1.25rem; /* Reserve space */
+}
+/* General Form Success Styling */
+.form-success {
+        color: theme('colors.secondary.dark');
+        font-size: 0.875rem; /* text-sm */
+        margin-top: 0.5rem;
+        min-height: 1.25rem; /* Reserve space */
+}
+/* Table Styling */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+}
+.data-table th, .data-table td {
+    border: 1px solid theme('colors.gray.200');
+    padding: 0.75rem 1rem;
+    text-align: left;
+}
+.data-table th {
+    background-color: theme('colors.gray.100');
+    font-weight: 600;
+    color: theme('colors.gray.darker');
+}
+.data-table tr:nth-child(even) {
+    background-color: theme('colors.gray.light');
+}
+.data-table tr:hover {
+    background-color: theme('colors.primary.light');
+}
+/* Button in table */
+.table-button {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem; /* text-xs */
+        border-radius: 0.375rem; /* rounded-md */
+        transition: background-color 0.2s ease;
+        border: 1px solid transparent; /* Added for consistency */
+        box-shadow: theme('boxShadow.sm');
+        cursor: pointer;
+}
+.delete-button {
+        background-color: theme('colors.red.100');
+        color: theme('colors.red.700');
+        border-color: theme('colors.red.300');
+}
+.delete-button:hover:not(:disabled) {
+        background-color: theme('colors.red.600');
+        color: white;
+        border-color: theme('colors.red.600');
+        box-shadow: theme('boxShadow.md');
+}
+.delete-button:focus {
+    outline: none;
+    ring: 2px;
+    ring-offset-2;
+    ring-color: theme('colors.red.500');
+}
+.delete-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+}

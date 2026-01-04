@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Schedule & Admin - Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/static/js/helpers.js"></script>
+<script src="/static/js/api.js"></script>
+<script src="/static/js/main.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="flex h-screen overflow-hidden bg-gray-100">
+
+    <aside id="sidebar" class="w-64 bg-primary-dark text-indigo-100 flex flex-col p-4 space-y-6 fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-30 shadow-lg print:hidden custom-scrollbar overflow-y-auto">
+        <div class="flex items-center justify-between pt-2 pb-4 border-b border-indigo-700">
+             <h2 class="text-2xl font-bold flex items-center text-white">
+                 <svg class="w-8 h-8 mr-2 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                 Scheduler
+             </h2>
+             <button id="closeSidebarBtn" class="md:hidden text-indigo-300 hover:text-white focus:outline-none">
+                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+             </button>
+        </div>
+        <nav class="flex-1 space-y-1.5">
+            <a href="#" data-section="home" class="nav-link flex items-center px-3 py-2.5 rounded-md text-sm font-medium active">
+                <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                Home
+            </a>
+            <a href="#" data-section="reminders" class="nav-link flex items-center px-3 py-2.5 rounded-md text-sm font-medium">
+                <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Reminders
+            </a>
+            <a href="#" data-section="notifications" class="nav-link flex items-center px-3 py-2.5 rounded-md text-sm font-medium relative">
+                <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                Notifications
+                <span class="absolute top-1.5 right-2.5 bg-accent-redDark text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center border-2 border-primary-dark">3</span> </a>
+
+             <div class="pt-4 mt-4 border-t border-indigo-700">
+                 <span class="px-3 text-xs font-semibold uppercase text-indigo-300 tracking-wider">Admin</span>
+             </div>
+
+             <a href="#" data-section="manageFaculties" class="nav-link flex items-center px-3 py-2.5 rounded-md text-sm font-medium">
+                 <svg class="w-5 h-5 mr-3 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" /></svg>
+                 Faculties
+             </a>
+             <a href="#" data-section="manageSubjects" class="nav-link flex items-center px-3 py-2.5 rounded-md text-sm font-medium">
+                 <svg class="w-5 h-5 mr-3 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" /></svg>
+                 Subjects
+             </a>
+             <a href="#" data-section="manageMappings" class="nav-link flex items-center px-3 py-2.5 rounded-md text-sm font-medium">
+                <svg class="w-5 h-5 mr-3 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" /></svg>
+                 Faculty Subjects
+             </a>
+             <a href="#" data-section="manageBranches" class="nav-link flex items-center px-3 py-2.5 rounded-md text-sm font-medium">
+                 <svg class="w-5 h-5 mr-3 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6" /></svg>
+                 Branches
+             </a>
+             <a href="#" data-section="manageSections" class="nav-link flex items-center px-3 py-2.5 rounded-md text-sm font-medium">
+                 <svg class="w-5 h-5 mr-3 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" /></svg>
+                 Sections
+             </a>
+             <a href="#" data-section="manageClasses" class="nav-link flex items-center px-3 py-2.5 rounded-md text-sm font-medium">
+                 <svg class="w-5 h-5 mr-3 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" /></svg>
+                 Classes
+             </a>
+             <a href="#" id="generateTimetableLink" class="nav-link flex items-center px-3 py-2.5 rounded-md text-sm font-medium">
+                 <svg class="w-5 h-5 mr-3 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" /></svg>
+                 Generate Timetable
+             </a>
+
+        </nav>
+        <div class="mt-auto pb-2">
+             <a href="#" id="logoutButton" class="nav-link flex items-center px-3 py-2.5 rounded-md text-sm font-medium mt-2"> <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Logout
+            </a>
+        </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <header class="bg-white shadow-sm p-4 flex justify-between items-center md:hidden print:hidden">
+            <button id="openSidebarBtn" class="text-gray-600 hover:text-primary-lighter focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+            <span class="text-xl font-semibold text-gray-700">Scheduler</span>
+            <div>{/* Placeholder */}</div>
+        </header>
+
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+
+            <section id="loginSection" class="app-section">
+                <div class="auth-form-container">
+                    <div class="text-center mb-8">
+                         <svg class="w-12 h-12 mx-auto text-primary-lighter" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                         <h2 class="mt-2 text-3xl font-extrabold text-center text-gray-darker">Welcome Back!</h2>
+                         <p class="mt-1 text-center text-gray-lighter">Sign in to continue</p>
+                    </div>
+                    <form id="loginForm" class="space-y-6">
+                        <div> <label for="loginEmail">Email Address</label> <input type="email" id="loginEmail" name="email" required placeholder="you@example.com"> </div>
+                        <div> <label for="loginPassword">Password</label> <input type="password" id="loginPassword" name="password" required placeholder="••••••••"> </div>
+                        <div class="flex items-center justify-end"> <a href="#" class="text-sm font-medium text-primary-lighter hover:text-primary-dark hover:underline">Forgot password?</a> </div>
+                        <div id="loginError" class="error-message"></div>
+                        <button type="submit" id="loginSubmitButton" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-primary-lighter hover:bg-primary-lighter focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-lighter"> Sign In </button>
+                        <p class="mt-6 text-center text-sm text-gray-lighter"> Don't have an account? <a href="#" id="showSignUp" class="font-medium text-primary-lighter hover:text-primary-dark hover:underline">Sign Up</a> </p>
+                    </form>
+                </div>
+            </section>
+
+            <section id="signUpSection" class="app-section">
+                 <div class="auth-form-container">
+                     <div class="text-center mb-8">
+                         <svg class="w-12 h-12 mx-auto text-primary-lighter" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                         <h2 class="mt-2 text-3xl font-extrabold text-center text-gray-darker">Create Account</h2>
+                         <p class="mt-1 text-center text-gray-lighter">Get started with the scheduler</p>
+                    </div>
+                    <form id="signUpForm" class="space-y-5">
+                        <div> <label for="signUpName">Full Name</label> <input type="text" id="signUpName" name="name" required placeholder="Your Name"> </div>
+                        <div> <label for="signUpEmail">Email Address</label> <input type="email" id="signUpEmail" name="email" required placeholder="you@example.com"> </div>
+                        <div> <label for="signUpPassword">Password</label> <input type="password" id="signUpPassword" name="password" required placeholder="Create a password"> </div>
+                        <div> <label for="signUpConfirmPassword">Confirm Password</label> <input type="password" id="signUpConfirmPassword" name="confirmPassword" required placeholder="Confirm your password"> </div>
+                        <div id="signUpError" class="error-message"></div>
+                        <button type="submit" id="signUpSubmitButton" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-primary-lighter hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-lighter"> Sign Up </button>
+                         <p class="mt-6 text-center text-sm text-gray-lighter"> Already have an account? <a href="#" id="showLogin" class="font-medium text-primary-lighter hover:text-primary-dark hover:underline">Sign In</a> </p>
+                    </form>
+                </div>
+            </section>
+
+            <div id="loggedInContent" class="hidden">
+                <section id="homeSection" class="app-section space-y-8 p-4 sm:p-6 lg:p-8">
+                    <h1 class="text-3xl font-bold text-gray-darker">Dashboard</h1>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card opacity-50">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Find Available Teachers</h2>
+                             <div class="text-center text-gray-500 p-4"> This feature is temporarily disabled and will be replaced by the timetable view. </div>
+                        </div>
+                        <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Quick Stats</h2>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center p-4 bg-primary-light rounded-lg"> <span class="text-gray-dark font-medium text-sm">Total Faculties</span> <span id="facultyCount" class="font-bold text-primary-dark text-lg">?</span> </div>
+                                <div class="flex justify-between items-center p-4 bg-secondary-light rounded-lg"> <span class="text-gray-dark font-medium text-sm">Total Subjects</span> <span id="subjectCount" class="font-bold text-secondary-dark text-lg">?</span> </div>
+                                <div class="flex justify-between items-center p-4 bg-accent-yellow rounded-lg"> <span class="text-gray-dark font-medium text-sm">Upcoming Reminders</span> <span id="upcomingRemindersCount" class="font-bold text-accent-yellowDark text-lg">0</span> </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="remindersSection" class="app-section p-4 sm:p-6 lg:p-8">
+                    <h1 class="text-3xl font-bold text-gray-darker mb-6">Reminders</h1>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Add New Reminder</h2>
+                            <form id="addReminderForm" class="space-y-4">
+                                <div> <label for="reminderText">Reminder Text</label> <input type="text" id="reminderText" name="reminderText" required placeholder="e.g., Staff Meeting"> </div>
+                                <div> <label for="reminderDate">Date & Time</label> <input type="datetime-local" id="reminderDate" name="reminderDate" required> </div>
+                                <div id="addReminderError" class="form-error"></div> <div id="addReminderSuccess" class="form-success"></div>
+                                <button type="submit" id="addReminderButton" class="w-full bg-secondary-lighter hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-lighter focus:ring-offset-2"> <span class="flex items-center justify-center"> <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg> Add Reminder </span> </button>
+                            </form>
+                        </div>
+                         <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Upcoming Reminders</h2>
+                            <div id="reminderList" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar pr-2"> <p id="noRemindersText" class="text-center text-gray-lighter pt-4">Loading reminders...</p> </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="notificationsSection" class="app-section p-4 sm:p-6 lg:p-8">
+                    <h1 class="text-3xl font-bold text-gray-darker mb-6">Notifications</h1>
+                    <div class="bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                         <div class="flex justify-between items-center mb-5 border-b border-gray-200 pb-3"> <h2 class="text-xl font-semibold text-gray-darker">Recent Activity</h2> <button class="text-sm font-medium text-primary-lighter hover:underline focus:outline-none">Mark all as read</button> </div>
+                         <div id="notificationList" class="space-y-4 max-h-[65vh] overflow-y-auto custom-scrollbar pr-2">
+                            <div class="notification-item flex items-start p-4 bg-accent-blue border-l-4 border-accent-blueDark rounded-r-md shadow-sm"> <svg class="w-6 h-6 text-accent-blueDark mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <div> <p class="font-medium text-gray-darker">System Update: MySQL integration complete.</p> <p class="text-sm text-gray-lighter">Now</p> </div> </div>
+                             <p id="noNotificationsText" class="text-center text-gray-lighter pt-4 hidden">You're all caught up!</p>
+                        </div>
+                    </div>
+                </section>
+
+                 <section id="manageFacultiesSection" class="app-section p-4 sm:p-6 lg:p-8">
+                    <h1 class="text-3xl font-bold text-gray-darker mb-6">Manage Faculties</h1>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Add New Faculty</h2>
+                            <form id="addFacultyForm" class="space-y-4">
+                                <div> <label for="facultyName">Faculty Name</label> <input type="text" id="facultyName" name="facultyName" required placeholder="e.g., Prof. Anil Kumar"> </div>
+                                <div> <label for="facultyCode">Faculty Code (Optional)</label> <input type="text" id="facultyCode" name="facultyCode" placeholder="e.g., AK001"> </div>
+                                <div id="addFacultyError" class="form-error"></div> <div id="addFacultySuccess" class="form-success"></div>
+                                <button type="submit" id="addFacultyButton" class="w-full bg-secondary-lighter hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-lighter focus:ring-offset-2"> Add Faculty </button>
+                            </form>
+                        </div>
+                        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Existing Faculties</h2>
+                            <div class="max-h-96 overflow-y-auto custom-scrollbar pr-2">
+                                <table id="facultyTable" class="data-table">
+                                    <thead> <tr> <th>ID</th> <th>Name</th> <th>Code</th> </tr> </thead>
+                                    <tbody id="facultyTableBody"> <tr><td colspan="3" class="text-center text-gray-500 py-4">Loading faculties...</td></tr> </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                 </section>
+
+                 <section id="manageSubjectsSection" class="app-section p-4 sm:p-6 lg:p-8">
+                    <h1 class="text-3xl font-bold text-gray-darker mb-6">Manage Subjects</h1>
+                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Add New Subject</h2>
+                            <form id="addSubjectForm" class="space-y-4">
+                                <div> <label for="subjectCode">Subject Code</label> <input type="text" id="subjectCode" name="subjectCode" required placeholder="e.g., CS-301"> </div>
+                                <div> <label for="subjectName">Subject Name</label> <input type="text" id="subjectName" name="subjectName" required placeholder="e.g., Data Structures"> </div>
+                                <div class="flex items-center"> <input type="checkbox" id="subjectIsLab" name="subjectIsLab" class="form-checkbox h-5 w-5 text-primary-lighter"> <label for="subjectIsLab" class="ml-2 text-sm text-gray-700 !mb-0">Is this a Lab subject?</label> </div>
+                                <div id="addSubjectError" class="form-error"></div> <div id="addSubjectSuccess" class="form-success"></div>
+                                <button type="submit" id="addSubjectButton" class="w-full bg-secondary-lighter hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-lighter focus:ring-offset-2"> Add Subject </button>
+                            </form>
+                        </div>
+                        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Existing Subjects</h2>
+                             <div class="max-h-96 overflow-y-auto custom-scrollbar pr-2">
+                                <table id="subjectTable" class="data-table">
+                                    <thead> <tr> <th>ID</th> <th>Code</th> <th>Name</th> <th>Is Lab?</th> </tr> </thead>
+                                    <tbody id="subjectTableBody"> <tr><td colspan="4" class="text-center text-gray-500 py-4">Loading subjects...</td></tr> </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                 </section>
+
+                 <section id="manageMappingsSection" class="app-section p-4 sm:p-6 lg:p-8">
+                    <h1 class="text-3xl font-bold text-gray-darker mb-6">Manage Faculty-Subject Assignments</h1>
+                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Assign Subject to Faculty</h2>
+                            <form id="addMappingForm" class="space-y-4">
+                                <div> <label for="mapFacultySelect">Select Faculty</label> <select id="mapFacultySelect" name="mapFacultySelect" required> <option value="">Loading faculties...</option> </select> </div>
+                                <div> <label for="mapSubjectSelect">Select Subject to Assign</label> <select id="mapSubjectSelect" name="mapSubjectSelect" required> <option value="">Loading subjects...</option> </select> </div>
+                                <div id="addMappingError" class="form-error"></div> <div id="addMappingSuccess" class="form-success"></div>
+                                <button type="submit" id="addMappingButton" class="w-full bg-secondary-lighter hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-lighter focus:ring-offset-2"> Assign Subject </button>
+                            </form>
+                        </div>
+                        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-3">Current Assignments</h2>
+                             <div class="mb-4"> <label for="viewFacultySelect" class="text-sm font-medium text-gray-700">View assignments for:</label> <select id="viewFacultySelect" name="viewFacultySelect" class="mt-1"> <option value="">Select a faculty...</option> </select> </div>
+                             <div id="facultyAssignmentsDisplay" class="border-t border-gray-200 pt-4"> <p id="assignmentsPlaceholder" class="text-gray-500">Select a faculty to see their assigned subjects.</p> <ul id="assignedSubjectsList" class="space-y-2 list-disc list-inside hidden"> </ul> </div>
+                        </div>
+                    </div>
+                 </section>
+
+                 <section id="manageBranchesSection" class="app-section p-4 sm:p-6 lg:p-8">
+                    <h1 class="text-3xl font-bold text-gray-darker mb-6">Manage Branches</h1>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Add New Branch</h2>
+                            <form id="addBranchForm" class="space-y-4">
+                                <div> <label for="branchName">Branch Name</label> <input type="text" id="branchName" name="branchName" required placeholder="e.g., Computer Science & Engineering"> </div>
+                                <div> <label for="branchCode">Branch Code (Optional)</label> <input type="text" id="branchCode" name="branchCode" placeholder="e.g., CSE"> </div>
+                                <div id="addBranchError" class="form-error"></div> <div id="addBranchSuccess" class="form-success"></div>
+                                <button type="submit" id="addBranchButton" class="w-full bg-secondary-lighter hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-lighter focus:ring-offset-2"> Add Branch </button>
+                            </form>
+                        </div>
+                        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Existing Branches</h2>
+                            <div class="max-h-96 overflow-y-auto custom-scrollbar pr-2">
+                                <table id="branchTable" class="data-table">
+                                    <thead> <tr> <th>ID</th> <th>Name</th> <th>Code</th> </tr> </thead>
+                                    <tbody id="branchTableBody"> <tr><td colspan="3" class="text-center text-gray-500 py-4">Loading branches...</td></tr> </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                 </section>
+
+                 <section id="manageSectionsSection" class="app-section p-4 sm:p-6 lg:p-8">
+                    <h1 class="text-3xl font-bold text-gray-darker mb-6">Manage Sections</h1>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Add New Section</h2>
+                            <form id="addSectionForm" class="space-y-4">
+                                <div> <label for="sectionName">Section Name/Letter</label> <input type="text" id="sectionName" name="sectionName" required placeholder="e.g., A, B, Alpha"> </div>
+                                <div id="addSectionError" class="form-error"></div> <div id="addSectionSuccess" class="form-success"></div>
+                                <button type="submit" id="addSectionButton" class="w-full bg-secondary-lighter hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-lighter focus:ring-offset-2"> Add Section </button>
+                            </form>
+                        </div>
+                        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Existing Sections</h2>
+                            <div class="max-h-96 overflow-y-auto custom-scrollbar pr-2">
+                                <table id="sectionTable" class="data-table">
+                                    <thead> <tr> <th>ID</th> <th>Name</th> </tr> </thead>
+                                    <tbody id="sectionTableBody"> <tr><td colspan="2" class="text-center text-gray-500 py-4">Loading sections...</td></tr> </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                 </section>
+
+                 <section id="manageClassesSection" class="app-section p-4 sm:p-6 lg:p-8">
+                    <h1 class="text-3xl font-bold text-gray-darker mb-6">Manage Classes</h1>
+                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Add New Class</h2>
+                            <form id="addClassForm" class="space-y-4">
+                                <div> <label for="classBranchSelect">Branch</label> <select id="classBranchSelect" name="classBranchSelect" required> <option value="">Loading branches...</option> </select> </div>
+                                <div> <label for="classSectionSelect">Section</label> <select id="classSectionSelect" name="classSectionSelect" required> <option value="">Loading sections...</option> </select> </div>
+                                <div> <label for="classYear">Year</label> <input type="number" id="classYear" name="classYear" required placeholder="e.g., 1, 2, 3" min="1"> </div>
+                                <div> <label for="className">Class Name (Optional)</label> <input type="text" id="className" name="className" placeholder="Auto-generated if blank"> </div>
+                                <div id="addClassError" class="form-error"></div> <div id="addClassSuccess" class="form-success"></div>
+                                <button type="submit" id="addClassButton" class="w-full bg-secondary-lighter hover:bg-secondary-dark text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-lighter focus:ring-offset-2"> Add Class </button>
+                            </form>
+                        </div>
+                        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-subtle border border-gray-200 hover-card">
+                            <h2 class="text-xl font-semibold text-gray-darker mb-5 border-b border-gray-200 pb-3">Existing Classes</h2>
+                             <div class="max-h-96 overflow-y-auto custom-scrollbar pr-2">
+                                <table id="classTable" class="data-table">
+                                    <thead> <tr> <th>ID</th> <th>Class Name</th> <th>Branch</th> <th>Section</th> <th>Year</th> </tr> </thead>
+                                    <tbody id="classTableBody"> <tr><td colspan="5" class="text-center text-gray-500 py-4">Loading classes...</td></tr> </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                 </section>
+
+            </div> </main> </div> <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-60 z-20 hidden md:hidden print:hidden" aria-hidden="true"></div>
+
+
+    <script src="/static/js/helpers.js"></script>
+<script src="/static/js/api.js"></script>
+<script src="/static/js/main.js"></script>
+
+</body>
+</html>
+
+
