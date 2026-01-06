@@ -1,5 +1,8 @@
-Flask
-Flask-Cors
-mysql-connector-python
-python-dotenv
-werkzeug
+
+Flask>=2.2.3
+Flask-Cors>=3.0.10
+mysql-connector-python>=8.0.32
+python-dotenv>=1.0.0
+werkzeug>=2.2.3
+Flask-SQLAlchemy
+Flask-Migrate

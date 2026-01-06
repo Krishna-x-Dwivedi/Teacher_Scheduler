@@ -1,7 +1,8 @@
 
 from flask import Blueprint, request, jsonify
-from backend.database import get_db
-from mysql.connector import Error, IntegrityError
+from backend.database import db
+from backend.models import User
+from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
 
 auth_bp = Blueprint('auth', __name__)
@@ -18,24 +19,20 @@ def signup():
         return jsonify({'error': 'Missing required fields'}), 400
 
     hashed_password = generate_password_hash(password)
+    
+    new_user = User(name=name, email=email, password=hashed_password)
 
-    db = get_db()
-    cursor = db.cursor()
     try:
-        query = "INSERT INTO users (name, email, password) VALUES (%s, %s, %s)"
-        cursor.execute(query, (name, email, hashed_password))
-        db.commit()
-        user_id = cursor.lastrowid
-        return jsonify({'message': 'User created successfully', 'user_id': user_id}), 201
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify({'message': 'User created successfully', 'user_id': new_user.id}), 201
     except IntegrityError:
-        db.rollback()
+        db.session.rollback()
         return jsonify({'error': 'Email already exists'}), 409
-    except Error as e:
-        db.rollback()
+    except Exception as e:
+        db.session.rollback()
         print(f"Error during signup: {e}")
         return jsonify({'error': 'An internal server error occurred'}), 500
-    finally:
-        cursor.close()
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
@@ -47,21 +44,20 @@ def login():
     if not email or not password:
         return jsonify({'error': 'Email and password are required'}), 400
 
-    db = get_db()
-    cursor = db.cursor(dictionary=True)
     try:
-        query = "SELECT id, name, email, password FROM users WHERE email = %s"
-        cursor.execute(query, (email,))
-        user = cursor.fetchone()
+        user = User.query.filter_by(email=email).first()
 
-        if user and check_password_hash(user['password'], password):
-            # Remove password from response
-            user.pop('password')
-            return jsonify({'message': 'Login successful', 'user': user}), 200
+        if user and check_password_hash(user.password, password):
+            return jsonify({
+                'message': 'Login successful',
+                'user': {
+                    'id': user.id,
+                    'name': user.name,
+                    'email': user.email
+                }
+            }), 200
         else:
             return jsonify({'error': 'Invalid email or password'}), 401
-    except Error as e:
+    except Exception as e:
         print(f"Error during login: {e}")
         return jsonify({'error': 'An internal server error occurred'}), 500
-    finally:
-        cursor.close()

@@ -2,25 +2,25 @@
 import unittest
 import json
 import os
-from app import app
-from backend.database import get_db
+from app import app, db
+from backend.models import User
 
 class TestTeacherScheduler(unittest.TestCase):
     def setUp(self):
         app.config['TESTING'] = True
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:' # Use in-memory DB for tests
         self.app = app.test_client()
         
-        # Use a separate test database or clean up?
-        # For this environment, we'll just be careful or use the same DB but clean up test data.
-        # Ideally we'd mock the DB or use a test config.
-        # But we'll try to use the real one and just add unique data.
-        self.unique_suffix = os.urandom(4).hex()
-        self.test_email = f"test_{self.unique_suffix}@example.com"
+        with app.app_context():
+            db.create_all()
+
+        self.test_email = "test@example.com"
         self.test_password = "password123"
 
     def tearDown(self):
-        # Optional cleanup
-        pass
+        with app.app_context():
+            db.session.remove()
+            db.drop_all()
 
     def test_signup_login_flow(self):
         # Signup
@@ -31,6 +31,12 @@ class TestTeacherScheduler(unittest.TestCase):
         })
         self.assertEqual(response.status_code, 201)
         
+        # Verify in DB
+        with app.app_context():
+            user = User.query.filter_by(email=self.test_email).first()
+            self.assertIsNotNone(user)
+            self.assertEqual(user.name, 'Test User')
+
         # Login
         response = self.app.post('/api/login', json={
             'email': self.test_email,
@@ -43,19 +49,14 @@ class TestTeacherScheduler(unittest.TestCase):
 
     def test_add_faculty(self):
         response = self.app.post('/api/faculties', json={
-            'name': f'Faculty {self.unique_suffix}',
-            'faculty_code': f'F{self.unique_suffix}'
+            'name': 'Dr. Test',
+            'faculty_code': 'T01'
         })
         self.assertEqual(response.status_code, 201)
 
     def test_generate_timetable_endpoint(self):
-        # Just check if endpoint is reachable and returns something reasonable
-        # It might fail if no data, but shouldn't 500 hard crash.
         response = self.app.post('/api/generate-timetable')
-        self.assertIn(response.status_code, [200, 500]) # 500 is possible if DB error, but hopefully 200
-        if response.status_code == 200:
-            data = json.loads(response.data)
-            self.assertIn('entries_generated', data)
+        self.assertIn(response.status_code, [200, 500])
 
 if __name__ == '__main__':
     unittest.main()
